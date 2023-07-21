@@ -1,0 +1,38 @@
+{
+  "name": "digital-homework-book-backend",
+  "version": "1.0.0",
+  "description": "The backend for a digital and colloborative homework book",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "nodemon dist/index.js",
+    "build:watch": "tsc -w",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "y"
+  },
+  "keywords": [
+    "digital",
+    "backend",
+    "mongodb",
+    "express",
+    "homework",
+    "colloborative",
+    "decentralized"
+  ],
+  "author": "Dlurak",
+  "license": "GPL-2.0-only",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.0",
+    "typescript": "^5.1.6"
+  }
+}
