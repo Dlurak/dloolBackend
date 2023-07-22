@@ -1,4 +1,4 @@
-import { db } from '../database';
+import { db } from '$database/database';
 
 export const usersCollection = db.collection('users');
 

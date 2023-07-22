@@ -7,7 +7,12 @@
         "strict": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+
+        "paths": {
+            "$utils/*": ["./src/utils/*"],
+            "$database/*": ["./src/database/*"],
+        }
     },
     "include": [
         "./src"
