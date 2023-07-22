@@ -1,15 +1,10 @@
-import { ObjectId } from 'mongodb';
-import { User, usersCollection } from './user';
+import { usersCollection } from './user';
 
-type userSearchOptions =
-    | {
-          name: string;
-          school: string;
-          class: string;
-      }
-    | {
-          id: ObjectId;
-      };
+type userSearchOptions = {
+    name: string;
+    school: string;
+    class: string;
+};
 
 /**
  * A function to check if a user exists
