@@ -1,0 +1,9 @@
+POST http://localhost:3000/user/register
+Content-Type: application/json
+
+{
+    "name": "Paulsen",
+    "password": "test",
+    "school": "St. Lioba Schule",
+    "class": "9B"
+}

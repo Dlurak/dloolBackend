@@ -11,7 +11,7 @@ export function createUser(user: User) {
 
     user.password = passwordHash;
 
-    usersCollection
+    return usersCollection
         .insertOne(user)
         .then((result) => {
             return true;
