@@ -1,22 +1,20 @@
 import { usersCollection } from './user';
 
-type userSearchOptions = {
-    name: string;
-    school: string;
-    class: string;
-};
-
 /**
  * A function to check if a user exists
  * @param options The search options to find a user
  * @returns A boolean indicating whether the user exists
  */
-async function doesUserExist(options: userSearchOptions): Promise<boolean> {
-    const exists = usersCollection.findOne(options).then((user) => {
+async function doesUsernameExist(username: string): Promise<boolean> {
+    const exists = usersCollection.findOne({ username }).then((user) => {
         return user !== null;
     });
 
     return exists;
 }
 
-export default doesUserExist;
+doesUsernameExist('test').then((exists) => {
+    console.log(exists);
+});
+
+export default doesUsernameExist;
