@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { db } from '../database';
 
 export const usersCollection = db.collection('users');
@@ -9,11 +10,11 @@ usersCollection.createIndex({ password: 1 });
 export interface User {
     username: string;
     name: string;
-    school: string;
-    class: string;
+    school: ObjectId;
+    classes: ObjectId[];
     password: string;
 }
 
 export interface UserWithId extends User {
-    _id: string;
+    _id: ObjectId;
 }

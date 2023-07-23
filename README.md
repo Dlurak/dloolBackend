@@ -24,14 +24,15 @@ Here are some problems they have and how Dlool solves them:
 These are only features, bugs and refactorings that I want to do until the first release.
 
 -   [x] Registering
--   [ ] Login Currently working on
--   [ ] Change user data
+-   [x] Login
 -   [ ] A way to add homework
--   [ ] A types dir
+-   [ ] A API endpoint to get homework
+-   [ ] A webhook to get homework
 
 These are things that I want to add but are not necessary for the first release.
 
 -   [ ] Moderation
+-   [ ] Change user data
 -   [ ] Block Bots
 -   [ ] Delete homework
 -   [ ] Modify homework

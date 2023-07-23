@@ -1,7 +1,9 @@
 import express from 'express';
-import { User } from '$database/auth/user';
-import { createUser } from '../../database/auth/createUser';
-import doesUsernameExist from '../../database/auth/doesUserExist';
+import { User } from '$database/user/user';
+import { createUser } from '../../database/user/createUser';
+import doesUsernameExist from '../../database/user/doesUserExist';
+import { findUniqueSchool } from '../../database/school/findSchool';
+import { findClass, getClassesFromSchool } from '../../database/classes/findClass';
 
 const router = express.Router();
 
@@ -25,12 +27,35 @@ router.post('/', async (req, res) => {
         });
         return;
     } else {
+        // body.school is the unique name so we need to find the id
+
+        const school = await findUniqueSchool(body.school as string);
+        if (school === null) {
+            res.status(400).json({
+                status: 'error',
+                message: `School ${body.school} does not exist`,
+            });
+            return;
+        }
+        const schoolId = school._id;
+        const classObject = await findClass(school, body.class as string)
+        if (classObject === null) {
+            res.status(400).json({
+                status: 'error',
+                message: `Class ${body.class} does not exist`,
+            });
+            return;
+        }
+
+
         const user: User = {
             username: body.username,
             name: body.name,
             password: body.password,
-            school: body.school,
-            class: body.class.toLowerCase(),
+            school: schoolId,
+            classes: [
+                classObject._id
+            ]
         };
 
         if (await createUser(user)) {

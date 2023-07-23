@@ -34,3 +34,28 @@ As for right now the password is not checked for security, but it will be in the
     "message": "User created"
 }
 ```
+
+### Login
+
+Dlool uses JWT for authentication. The token is valid for 1 hour.
+
+`POST /user/login`
+
+**Request**
+
+```json
+{
+    "username": "username",
+    "password": "password"
+}
+```
+
+**Response**
+
+```json
+{
+    "status": "success",
+    "message": "Login successful",
+    "token": "jwt-token"
+}
+```
