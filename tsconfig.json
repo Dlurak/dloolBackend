@@ -8,10 +8,12 @@
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "noImplicitAny": true,
+        "removeComments": true,
 
+        "baseUrl": "./src",
         "paths": {
-            "$utils/*": ["./src/utils/*"],
-            "$database/*": ["./src/database/*"],
+            "$utils/*": ["utils/*"],
+            "$database/*": ["database/*"],
         }
     },
     "include": [

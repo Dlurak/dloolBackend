@@ -1,7 +1,7 @@
 import express from 'express';
 import { User } from '$database/auth/user';
-import { createUser } from '$database/auth/createUser';
-import doesUserExist from '$database/auth/doesUserExist';
+import { createUser } from '../../database/auth/createUser';
+import doesUsernameExist from '../../database/auth/doesUserExist';
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
         }
     }
 
-    if (await doesUserExist(body.username)) {
+    if (await doesUsernameExist(body.username)) {
         res.status(400).json({
             status: 'error',
             message: `User ${body.username} already exists`,

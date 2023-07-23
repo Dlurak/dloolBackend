@@ -16,3 +16,23 @@ Here are some problems they have and how Dlool solves them:
 | Entries are not very structured            | Dlool has a structured entry system.                                           |
 | When you lose your homework book           | Dlool is digital, you can't lose it.                                           |
 | Every year you need a new homework book    | Dlool can be used for multiple years.                                          |
+
+---
+
+## Todo
+
+These are only features, bugs and refactorings that I want to do until the first release.
+
+-   [x] Registering
+-   [ ] Login Currently working on
+-   [ ] Change user data
+-   [ ] A way to add homework
+-   [ ] A types dir
+
+These are things that I want to add but are not necessary for the first release.
+
+-   [ ] Moderation
+-   [ ] Block Bots
+-   [ ] Delete homework
+-   [ ] Modify homework
+-   [ ] Support for multiple output formats like json, xml, csv

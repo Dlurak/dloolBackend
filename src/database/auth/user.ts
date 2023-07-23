@@ -1,4 +1,4 @@
-import { db } from '$database/database';
+import { db } from '../database';
 
 export const usersCollection = db.collection('users');
 
@@ -12,4 +12,8 @@ export interface User {
     school: string;
     class: string;
     password: string;
+}
+
+export interface UserWithId extends User {
+    _id: string;
 }

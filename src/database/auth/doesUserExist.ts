@@ -13,8 +13,4 @@ async function doesUsernameExist(username: string): Promise<boolean> {
     return exists;
 }
 
-doesUsernameExist('test').then((exists) => {
-    console.log(exists);
-});
-
 export default doesUsernameExist;
