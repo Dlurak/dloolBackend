@@ -3,11 +3,7 @@ import { User } from '$database/user/user';
 import { createUser } from '../../database/user/createUser';
 import doesUsernameExist from '../../database/user/doesUserExist';
 import { findUniqueSchool } from '../../database/school/findSchool';
-import {
-    findClass,
-    getClassesFromSchool,
-} from '../../database/classes/findClass';
-import { ObjectId } from 'mongodb';
+import { findClass } from '../../database/classes/findClass';
 
 const router = express.Router();
 
