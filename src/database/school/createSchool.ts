@@ -5,7 +5,7 @@ import { School, schoolsCollection } from './school';
  * @param school The school to create
  * @returns A promise that resolves to true if the school was created successfully, false otherwise
  */
-function createSchool(school: School) {
+export function createSchool(school: School) {
     return schoolsCollection
         .insertOne(school)
         .then(() => {
@@ -15,5 +15,3 @@ function createSchool(school: School) {
             return false;
         });
 }
-
-export default { createSchool };

@@ -25,6 +25,8 @@ These are only features, bugs and refactorings that I want to do until the first
 
 -   [x] Registering
 -   [x] Login
+-   [ ] A way to create a School (_currently working on it_)
+-   [ ] A way to create a Class (_started working on it_)
 -   [ ] A way to add homework
 -   [ ] A API endpoint to get homework
 -   [ ] A webhook to get homework
@@ -37,3 +39,7 @@ These are things that I want to add but are not necessary for the first release.
 -   [ ] Delete homework
 -   [ ] Modify homework
 -   [ ] Support for multiple output formats like json, xml, csv
+
+## Thanks
+
+I want to thank [the contributors of this repo](https://github.com/dmfilipenko/timezones.json/blob/master/timezones.json).
