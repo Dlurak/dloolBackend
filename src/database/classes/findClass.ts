@@ -5,7 +5,7 @@ import { classesCollection } from './class';
 function findClass(school: SchoolWithId, className: string) {
     const schoolId = school._id;
 
-    return classesCollection.findOne({ name: className, school: schoolId })
+    return classesCollection.findOne({ name: className, school: schoolId });
 }
 
 function getClassesFromSchool(school: SchoolWithId) {

@@ -2,9 +2,9 @@ POST http://localhost:3000/user/register
 Content-Type: application/json
 
 {
-    "username": "paulsen",
-    "name": "Paulsen",
+    "username": "dlurak",
+    "name": "Dlurak",
     "password": "test",
-    "school": "St. Lioba Schule",
-    "class": "9B"
+    "school": "test",
+    "class": "test"
 }

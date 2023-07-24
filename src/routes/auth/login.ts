@@ -1,5 +1,5 @@
 import express from 'express';
-import { generateToken } from '../../utils/auth';
+import { generateToken } from '../../utils/jwt';
 import checkUsernamePassword from '../../database/user/checkPassword';
 
 const router = express.Router();

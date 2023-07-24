@@ -19,7 +19,7 @@ function findUniqueSchoolById(id: ObjectId) {
 }
 
 /**
- * 
+ *
  * @param name The name of the school to find, case sensitive and must match exactly, I plan to support RegEx in the future
  * @param timezoneOffsetHours The timezone offset of the school to find in hours
  * @returns An array of schools with the given name and timezone offset

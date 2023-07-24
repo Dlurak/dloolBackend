@@ -1,10 +1,13 @@
-import { ObjectId } from "mongodb";
-import { schoolsCollection } from "./school";
+import { ObjectId } from 'mongodb';
+import { schoolsCollection } from './school';
 
-function addClass(schoolId: ObjectId,classId: ObjectId) {
-    schoolsCollection.findOneAndUpdate({ _id: schoolId }, { 
-        $push: { 'classes': classId }
-    })
+function addClass(schoolId: ObjectId, classId: ObjectId) {
+    schoolsCollection.findOneAndUpdate(
+        { _id: schoolId },
+        {
+            $push: { classes: classId },
+        },
+    );
 }
 
-export { addClass as addClassToSchool }
+export { addClass as addClassToSchool };
