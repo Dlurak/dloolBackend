@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 
 import userRouter from './routes/auth/router';
 import schoolRouter from './routes/schools/router';
+import classRouter from './routes/classes/router';
 
 dotenv.config({ path: '.env.public' });
 
@@ -23,3 +24,4 @@ app.all('/', (req, res) => {
 
 app.use('/users?', userRouter);
 app.use('/schools?', schoolRouter);
+app.use('/class(es)?', classRouter);

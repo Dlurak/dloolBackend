@@ -1,7 +1,7 @@
 import { addClassToSchool } from '../school/update';
 import { Class, classesCollection } from './class';
 
-function createClass(classObj: Class): Promise<boolean> {
+export function createClass(classObj: Class): Promise<boolean> {
     // 1. add the class to the db
 
     return classesCollection
@@ -18,5 +18,3 @@ function createClass(classObj: Class): Promise<boolean> {
             return false;
         });
 }
-
-export default { createClass };
