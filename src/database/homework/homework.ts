@@ -1,7 +1,11 @@
 import { Collection, ObjectId } from 'mongodb';
 import { db } from '../database';
 
-export const homeworkCollection = db.collection('homework') as Collection<Homework>;
+export const homeworkCollection = db.collection(
+    'homework',
+) as Collection<Homework>;
+
+homeworkCollection.createIndex({ class: 1, from: 1 }, { unique: true });
 
 export interface Homework {
     creator: ObjectId;
@@ -13,7 +17,7 @@ export interface Homework {
         year: number;
         month: number;
         day: number;
-    }
+    };
 
     assignments: {
         subject: string;
@@ -22,6 +26,6 @@ export interface Homework {
             year: number;
             month: number;
             day: number;
-        }
-    }[]
+        };
+    }[];
 }
