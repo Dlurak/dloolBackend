@@ -9,6 +9,71 @@ import { addMemberToClass } from '../../database/classes/update';
 
 const router = express.Router();
 
+/**
+ * @api {post} /auth/register Register a new user
+ * @apiName Register
+ * @apiGroup Auth
+ * @apiVersion 1.0.0
+ * @apiDescription Register a new user
+ *
+ * @apiBody {String} username The unique username of the user
+ * @apiBody {String} name The name of the user it doesn't have to be unique
+ * @apiBody {String} password The password of the user it shouldn't be hashed before sending as it is hashed on the server
+ * @apiBody {String} school The unique name of the school the user is in
+ * @apiBody {String} class The name of the class the user is in
+ *
+ *
+ * @apiSuccess (201) {String} status Status of the request (success).
+ * @apiSuccess (201) {String} message Message of the request (User created).
+ * @apiSuccessExample {json} Success-Response:
+ *    HTTP/1.1 201 Created
+ *   {
+ *      "status": "success",
+ *     "message": "User created"
+ *   }
+ *
+ * @apiExample {curl} Curl example:
+ *   curl -X POST -H "Content-Type: application/json" -d '{"username": "username", "name": "name", "password": "password", "school": "school", "class": "class"}' http://localhost:3000/auth/register
+ *
+ *
+ * @apiExample {javascript} JavaScript example:
+ *    const data = {
+ *       "username": "username",
+ *       "name": "name",
+ *       "password": "password",
+ *       "school": "school",
+ *       "class": "class",
+ *    };
+ *    const response = await fetch('http://localhost:3000/auth/register', {
+ *       method: 'POST',
+ *       body: JSON.stringify(data),
+ *       headers: {
+ *          'Content-Type': 'application/json'
+ *       }
+ *    };
+ *
+ * @apiPermission none
+ *
+ * @apiError (400) {String} status Status of the request (error).
+ * @apiError (400) {String} error Error message.
+ *
+ * @apiErrorExample {json} 400:
+ *   HTTP/1.1 400 Bad Request
+ *  {
+ *    "status": "error",
+ *    "error": "Missing username in request body"
+ *  }
+ *
+ * @apiError (500) {String} status Status of the request (error).
+ * @apiError (500) {String} error Error message (Internal server error).
+ *
+ * @apiErrorExample {json} 500:
+ *  HTTP/1.1 500 Internal Server Error
+ *  {
+ *     "status": "error",
+ *     "error": "Internal server error"
+ *  }
+ */
 router.post('/', async (req, res) => {
     const body = req.body;
 
@@ -27,7 +92,7 @@ router.post('/', async (req, res) => {
         if (!body[entry[0]]) {
             res.status(400).json({
                 status: 'error',
-                message: `Missing ${entry[0]} in request body`,
+                error: `Missing ${entry[0]} in request body`,
             });
             return;
         }
@@ -36,7 +101,7 @@ router.post('/', async (req, res) => {
         if (typeof body[entry[0]] !== entry[1]) {
             res.status(400).json({
                 status: 'error',
-                message: `Expected ${entry[0]} to be of type ${entry[1]}`,
+                error: `Expected ${entry[0]} to be of type ${entry[1]}`,
             });
             return;
         }
@@ -45,7 +110,7 @@ router.post('/', async (req, res) => {
     if (await doesUsernameExist(body.username)) {
         res.status(400).json({
             status: 'error',
-            message: `User ${body.username} already exists`,
+            error: `User ${body.username} already exists`,
         });
         return;
     } else {
@@ -55,7 +120,7 @@ router.post('/', async (req, res) => {
         if (school === null) {
             res.status(400).json({
                 status: 'error',
-                message: `School ${body.school} does not exist`,
+                error: `School ${body.school} does not exist`,
             });
             return;
         }
@@ -64,7 +129,7 @@ router.post('/', async (req, res) => {
         if (classObject === null) {
             res.status(400).json({
                 status: 'error',
-                message: `Class ${body.class} does not exist`,
+                error: `Class ${body.class} does not exist`,
             });
             return;
         }
@@ -82,13 +147,13 @@ router.post('/', async (req, res) => {
             if (newUser === null) {
                 res.status(500).json({
                     status: 'error',
-                    message: 'Internal server error',
+                    error: 'Internal server error',
                 });
                 return;
             }
 
             const userId = newUser._id;
-            addMemberToClass(classObject._id, userId)
+            addMemberToClass(classObject._id, userId);
 
             res.status(201).json({
                 status: 'success',
@@ -98,7 +163,7 @@ router.post('/', async (req, res) => {
         } else {
             res.status(500).json({
                 status: 'error',
-                message: 'Internal server error',
+                error: 'Internal server error',
             });
             return;
         }
