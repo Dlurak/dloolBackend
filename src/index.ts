@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import userRouter from './routes/auth/router';
 import schoolRouter from './routes/schools/router';
 import classRouter from './routes/classes/router';
-import homeworkRouter from './routes/homework/router'
+import homeworkRouter from './routes/homework/router';
 
 dotenv.config({ path: '.env.public' });
 

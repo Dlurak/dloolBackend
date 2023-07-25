@@ -5,6 +5,6 @@ Content-Type: application/json
     "username": "dlurak",
     "name": "Dlurak",
     "password": "test",
-    "school": "test",
-    "class": "test"
+    "school": "school",
+    "class": "class"
 }

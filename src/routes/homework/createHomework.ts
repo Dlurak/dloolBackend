@@ -1,4 +1,11 @@
 import express from 'express';
+import authenticate from '../../middleware/auth';
+import findUsername from '../../database/user/findUser';
+import { findUniqueSchoolById } from '../../database/school/findSchool';
+import { findClass } from '../../database/classes/findClass';
+import { createHomework } from '../../database/homework/createHomework';
+import { WithId } from 'mongodb';
+import { Homework } from '../../database/homework/homework';
 
 const router = express.Router();
 
@@ -8,7 +15,8 @@ interface Date {
     day: number;
 }
 
-router.post('/', (req, res) => {
+router.use(authenticate);
+router.post('/', async (req, res) => {
     const body = req.body;
     let buildHomework: any = {};
 
@@ -33,8 +41,7 @@ router.post('/', (req, res) => {
     buildHomework = {
         from: sortDate(from),
         assignments: [],
-    }
-
+    };
 
     if (!Array.isArray(assignments)) {
         res.status(400).json({
@@ -50,12 +57,11 @@ router.post('/', (req, res) => {
         return;
     }
 
-
     let assignmentIndex = 0;
     for (const assignment of assignments) {
         // check for subject: string description: string and due: some format as from but it must not be the same date as from
         const { subject, description, due } = assignment;
-        
+
         if (!subject || !description || !due) {
             res.status(400).json({
                 status: 'error',
@@ -64,10 +70,7 @@ router.post('/', (req, res) => {
             return;
         }
 
-        if (
-            typeof subject !== 'string' ||
-            typeof description !== 'string'
-        ) {
+        if (typeof subject !== 'string' || typeof description !== 'string') {
             res.status(400).json({
                 status: 'error',
                 message: `Invalid fields for assignment ${assignmentIndex}`,
@@ -87,8 +90,7 @@ router.post('/', (req, res) => {
             subject,
             description,
             due: sortDate(due),
-        }
-
+        };
 
         buildHomework.assignments.push(newAssignment);
 
@@ -96,8 +98,65 @@ router.post('/', (req, res) => {
     }
 
     // BASIC VALIDATION DONE
-});
 
+    const username = res.locals.jwtPayload.username as string;
+    const user = await findUsername(username);
+
+    if (!user) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Internal server error, user could not be found',
+        });
+        return;
+    }
+
+    const schoolOfUser = await findUniqueSchoolById(user.school);
+
+    if (!schoolOfUser) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Internal server error, school of user could not be found',
+        });
+        return;
+    }
+
+    const classOfHomework = await findClass(schoolOfUser, className);
+    if (!classOfHomework) {
+        res.status(400).json({
+            status: 'error',
+            message: 'Class not found',
+        });
+        return;
+    }
+
+    buildHomework.class = classOfHomework._id;
+    buildHomework.creator = user._id;
+    buildHomework.createdAt = Date.now();
+
+    console.log(buildHomework);
+
+    let data: WithId<Homework>;
+
+    return createHomework(buildHomework).then((homework) => {
+        if (!homework) {
+            res.status(500).json({
+                status: 'error',
+                error: 'Internal server error, homework could not be created',
+                hint: 'Maybe there is already a homework for the given class and date?',
+            });
+            return;
+        } else {
+            data = homework;
+        }
+
+        res.status(201).json({
+            status: 'success',
+            message: 'Homework created',
+            data,
+        });
+        return;
+    });
+});
 
 function isDateValid(date: Date) {
     const { year, month, day } = date;
@@ -128,8 +187,7 @@ function sortDate(date: Date) {
         year,
         month,
         day,
-    }
+    };
 }
-
 
 export default router;

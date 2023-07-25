@@ -2,6 +2,6 @@ POST http://localhost:3000/classes
 Content-Type: application/json
 
 {
-    "name": "this here",
-    "school": "test-school"
+    "name": "class",
+    "school": "school"
 }

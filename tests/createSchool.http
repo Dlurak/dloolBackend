@@ -4,6 +4,6 @@ Content-Type: application/json
 {
     "name": "School",
     "description": "This school does not exist it is only for testing purposes",
-    "uniqueName": "test-school",
+    "uniqueName": "school",
     "timezoneOffset": 0
 }
