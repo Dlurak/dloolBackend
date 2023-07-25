@@ -42,6 +42,39 @@ These are things that I want to add but are not necessary for the first release.
 -   [ ] Modify homework
 -   [ ] Support for multiple output formats like json, xml, csv
 
+## Installation
+
+1. Clone this repository
+    ```bash
+     git clone git@github.com:Dlurak/dloolBackend.git
+    ```
+2. Install the dependencies
+    ```bash
+     npm install
+    ```
+3. Create a `.env` file in the root directory of the project
+    ```bash
+    touch .env
+    ```
+4. Add the following variables to the `.env` file
+    1. `Mongo_URI`=String to the Cluster `<username>`, `<password>` and `<dbname>` can be replaced automatically, e.g. `mongodb+srv://<username>:<password>@<dbname>.ljdmejo.mongodb.net/?retryWrites=true&w=majority`
+    2. `MONGO_PASSWORD`=Password for the database
+    3. `MONGO_USERNAME`=Username for the database
+    4. `MONGO_DBNAME`=Name of the database
+    5. `JWT_SECRET`=Secret for the JWT, just a random string
+
+## Usage
+
+1. Compile the TypeScript code
+    ```bash
+    npm run build
+    ```
+2. Start the server
+    ```bash
+    npm run start
+    ```
+3. The server is now running on port [localhost port 3000](http://localhost:3000/)
+
 ## Thanks
 
 I want to thank [the contributors of that repo](https://github.com/dmfilipenko/timezones.json/blob/master/timezones.json).
