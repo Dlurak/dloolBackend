@@ -1,9 +1,11 @@
 import express from 'express';
-import { User } from '$database/user/user';
+import { User } from '../../database/user/user';
 import { createUser } from '../../database/user/createUser';
 import doesUsernameExist from '../../database/user/doesUserExist';
 import { findUniqueSchool } from '../../database/school/findSchool';
 import { findClass } from '../../database/classes/findClass';
+import findUsername from '../../database/user/findUser';
+import { addMemberToClass } from '../../database/classes/update';
 
 const router = express.Router();
 
@@ -76,6 +78,18 @@ router.post('/', async (req, res) => {
         };
 
         if (await createUser(user)) {
+            const newUser = await findUsername(body.username);
+            if (newUser === null) {
+                res.status(500).json({
+                    status: 'error',
+                    message: 'Internal server error',
+                });
+                return;
+            }
+
+            const userId = newUser._id;
+            addMemberToClass(classObject._id, userId)
+
             res.status(201).json({
                 status: 'success',
                 message: 'User created',
