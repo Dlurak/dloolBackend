@@ -1,7 +1,7 @@
 {
   "name": "digital-homework-book-backend",
-  "version": "1.0.0",
-  "description": "The backend for a digital and colloborative homework book",
+  "version": "v1.0-alpha",
+  "description": "The backend for a digital and collaborative homework book",
   "main": "index.ts",
   "scripts": {
     "start": "node dist/index.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "y"
+    "url": "https://github.com/Dlurak/dloolBackend"
   },
   "keywords": [
     "digital",

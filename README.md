@@ -27,11 +27,14 @@ These are only features, bugs and refactorings that I want to do until the first
 -   [x] Login
 -   [x] A way to create a School
 -   [x] A way to create a Class
--   [ ] A way to add homework
--   [ ] A API endpoint to get homework
+-   [x] A way to add homework
+-   [ ] An API endpoint to get homework
 
 These are things that I want to add but are not necessary for the first release.
 
+-   [ ] An API endpoint to get a list of all schools
+-   [ ] An API endpoint to get a list of all classes
+-   [ ] An API endpoint to get a list of all users
 -   [ ] Moderation
 -   [ ] Change user data
 -   [ ] Block Bots
@@ -41,4 +44,4 @@ These are things that I want to add but are not necessary for the first release.
 
 ## Thanks
 
-I want to thank [the contributors of this repo](https://github.com/dmfilipenko/timezones.json/blob/master/timezones.json).
+I want to thank [the contributors of that repo](https://github.com/dmfilipenko/timezones.json/blob/master/timezones.json).
