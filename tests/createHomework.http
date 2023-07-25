@@ -1,0 +1,22 @@
+POST http://localhost:3000/homework
+Content-Type: application/json
+
+{
+    "className": "5A",
+    "from": {
+        "year": 2019,
+        "month": 1,
+        "day": 1
+    },
+    "assignments": [
+        {
+            "subject": "Mathe",
+            "description": "Aufgabe 1",
+            "due": {
+                "month": 1,
+                "year": 2019,
+                "day": 2
+            }
+        }
+    ]
+}

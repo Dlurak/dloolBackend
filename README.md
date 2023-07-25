@@ -25,11 +25,10 @@ These are only features, bugs and refactorings that I want to do until the first
 
 -   [x] Registering
 -   [x] Login
--   [ ] A way to create a School (_currently working on it_)
--   [ ] A way to create a Class (_started working on it_)
+-   [x] A way to create a School
+-   [x] A way to create a Class
 -   [ ] A way to add homework
 -   [ ] A API endpoint to get homework
--   [ ] A webhook to get homework
 
 These are things that I want to add but are not necessary for the first release.
 
