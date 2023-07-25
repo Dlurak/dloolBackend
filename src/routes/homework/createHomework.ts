@@ -15,8 +15,7 @@ interface Date {
     day: number;
 }
 
-router.use(authenticate);
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
     const body = req.body;
     let buildHomework: any = {};
 
@@ -132,8 +131,6 @@ router.post('/', async (req, res) => {
     buildHomework.class = classOfHomework._id;
     buildHomework.creator = user._id;
     buildHomework.createdAt = Date.now();
-
-    console.log(buildHomework);
 
     let data: WithId<Homework>;
 

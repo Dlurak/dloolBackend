@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { homeworkCollection } from './homework';
 
-function getHomeworkByClass(classId: ObjectId) {
+export function getHomeworkByClass(classId: ObjectId) {
     return homeworkCollection.find({ class: classId }).toArray();
 }
 

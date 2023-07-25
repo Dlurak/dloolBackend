@@ -16,7 +16,6 @@ export function createHomework(homework: Homework) {
     return homeworkCollection
         .insertOne(homework)
         .then((value) => {
-            console.log('Homework created');
             return { ...homework, _id: value.insertedId } as WithId<Homework>;
         })
         .catch(() => {
