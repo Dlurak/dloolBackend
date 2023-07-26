@@ -10,7 +10,8 @@
     "build:watch": "tsc -w",
     "format": "prettier --write \"src/**/*.ts\"",
     "document": "apidoc -i src/ -o docs/ -c apidoc.json -e node_modules/",
-    "prebuild": "npm run format && npm run document"
+    "prebuild": "npm run format && npm run document",
+    "serve:docs": "node dist/docs.js"
   },
   "repository": {
     "type": "git",
