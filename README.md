@@ -73,7 +73,23 @@ These are things that I want to add but are not necessary for the first release.
     ```bash
     npm run start
     ```
-3. The server is now running on port [localhost port 3000](http://localhost:3000/)
+3. The server is now running on [localhost port 3000](http://localhost:3000/)
+
+### Documentation
+
+1. Compile the TypeScript code
+    ```bash
+    npm run build
+    ```
+2. Create the static documentation HTML files
+    ```bash
+    npm run document
+    ```
+3. Start the documentation server
+    ```bash
+    npm run serve:docs
+    ```
+4. The server is now running on [localhost port 3001](http://localhost:3001)
 
 ## Thanks
 
