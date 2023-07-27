@@ -1,6 +1,6 @@
 {
   "name": "digital-homework-book-backend",
-  "version": "v1.0-alpha",
+  "version": "0.0.1",
   "description": "The backend for a digital and collaborative homework book",
   "main": "index.ts",
   "scripts": {

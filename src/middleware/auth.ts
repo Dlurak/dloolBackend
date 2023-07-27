@@ -32,3 +32,30 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default authenticate;
+
+/**
+ * @apiDefine jwtAuth User A route that requires authentication using JWT
+ * @apiHeader {String} authehorization A JSON-Web-Token a <code>Bearer</code> should stand in front of it
+ * @apiHeaderExample {json} Request-Example:
+ *    {
+ *       "authorization": Bearer xxxxx.yyyyy.zzzzz
+ *    }
+ *
+ * @apiError (401) {String} status The status of the request
+ * @apiError (401) {String} message A short explaination of the error
+ *
+ * @apiErrorExample {json} 401 - Missing authorization header:
+ *    HTTP/1.1 401 Unauthorized
+ *    {
+ *       "status": "error",
+ *       "message": "Missing authorization header"
+ *    }
+ * @apiErrorExample {json} 401 - Invalid token:
+ *    HTTP/1.1 401 Unauthorized
+ *    {
+ *       "status": "error",
+ *       "message": "Invalid token"
+ *    }
+ *
+ * @apiPermission User
+ */
