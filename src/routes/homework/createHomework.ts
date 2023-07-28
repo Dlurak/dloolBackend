@@ -34,7 +34,7 @@ interface Date {
  * @apiBody {Number} assignments.due.month The month the assignment is due to
  * @apiBody {Number} assignments.due.day The day the assignment is due to
  *
- * @apiExample {json} Example usage:
+ * @apiExample {json} Example-body:
  *    {
  *       "from": {
  *          "year": 2023,
