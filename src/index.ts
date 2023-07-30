@@ -1,5 +1,6 @@
-import express from 'express';
+import express, { Request } from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 import userRouter from './routes/auth/router';
 import schoolRouter from './routes/schools/router';
@@ -11,6 +12,7 @@ dotenv.config({ path: '.env.public' });
 const app = express();
 
 app.use(express.json());
+app.use(cors<Request>());
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);

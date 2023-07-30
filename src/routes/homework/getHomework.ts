@@ -10,13 +10,13 @@ const router = express.Router();
  * @apiName Get Homework
  * @apiGroup Homework
  * @apiVersion  1.0.0
- * 
+ *
  * @apiQuery {String} :class The name of the class
  * @apiQuery {String} :school The name of the school
- * 
+ *
  * @apiError (400) {String} status The status of the request (error)
  * @apiError (400) {String} message A short explaination of the error
- * 
+ *
  * @apiErrorExample {json} 400 - Missing query parameter:
  *    HTTP/1.1 400 Bad Request
  *    {
@@ -35,8 +35,8 @@ const router = express.Router();
  *       "status": "error",
  *       "message": "The class 1a does not exist in the school Hogwarts"
  *    }
- * 
- * 
+ *
+ *
  * @apiSuccess (200) {String} status A status (success)
  * @apiSuccess (200) {String} message A short explaination (Homework found)
  * @apiSuccess (200) {Object[]} data The actual data
@@ -50,8 +50,8 @@ const router = express.Router();
  * @apiSuccess (200) {Object[]} data.assignments The assignments for the given date
  * @apiSuccess (200) {String} data.assignments.description A short explanation what the task is
  * @apiSuccess (200) {Object} data.assignments.due The date the assignment is due to
- * @apiSuccess (200) {Number} data.assignments.due.year 
- * @apiSuccess (200) {Number} data.assignments.due.month 
+ * @apiSuccess (200) {Number} data.assignments.due.year
+ * @apiSuccess (200) {Number} data.assignments.due.month
  * @apiSuccess (200) {Number} data.assignments.due.day
  * @apiSuccessExample {json} Success-Response:
  *    HTTP/1.1 200 Success

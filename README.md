@@ -28,7 +28,7 @@ These are only features, bugs and refactorings that I want to do until the first
 -   [x] A way to create a School
 -   [x] A way to create a Class
 -   [x] A way to add homework
--   [ ] An API endpoint to get homework
+-   [x] An API endpoint to get homework
 
 These are things that I want to add but are not necessary for the first release.
 

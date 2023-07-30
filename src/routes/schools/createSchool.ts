@@ -6,18 +6,18 @@ import { createSchool } from '../../database/school/createSchool';
 const router = express.Router();
 
 /**
- * 
+ *
  * @api {POST} /school Create School
  * @apiName createSchool
  * @apiGroup Schools
  * @apiVersion  1.0.0
  * @apiDescription Create a new School
- * 
+ *
  * @apiBody {String} name The name of the new school
  * @apiBody {String} description A short description of the school so it is clear to others which exact school it is. So things like the city would be good.
  * @apiBody {String} uniqueName A unique name for the school no other school can already have this name
  * @apiBody {Number} timezoneOffset The timezone offset isn't actually used. So it will be probably be optional in a future version.
- * 
+ *
  * @apiExample {json} Example-Body:
  *    {
  *       "name": "Hogwarts"
@@ -25,23 +25,23 @@ const router = express.Router();
  *       "uniqueName": "hogwarts"
  *       "timezoneOffset": 0
  *    }
- * 
+ *
  * @apiSuccess (201) status The status of the request
  * @apiSuccess (201) message A short explaination
- * 
+ *
  * @apiSuccessExample {json} Success-Response:
  *    HTTP/1.1 201 Created
  *    {
  *       "status": "Success",
  *       "message": "School created successfully"
  *    }
- * 
+ *
  * @apiError (400) {String} status The status of the request
  * @apiError (400) {String} message A short explaination of the error
- * 
+ *
  * @apiError (500) {String} status The status of the request
  * @apiError (500) {String} message A short explaination of the error
- * 
+ *
  * @apiErrorExample {json} 400 - Missing key:
  *    HTTP/1.1 400 Bad Request
  *    {
@@ -66,9 +66,9 @@ const router = express.Router();
  *       "status": "error",
  *       "message": "Failed to create school"
  *    }
- * 
+ *
  * @apiPermission None
-*/
+ */
 router.post('/', async (req, res) => {
     const body = req.body;
 
