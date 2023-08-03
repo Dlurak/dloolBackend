@@ -48,6 +48,7 @@ const router = express.Router();
  * @apiSuccess (200) {Number} data.from.month
  * @apiSuccess (200) {Number} data.from.day
  * @apiSuccess (200) {Object[]} data.assignments The assignments for the given date
+ * @apiSuccess (200) {String} data.assignments.subject The subject of the assignment, e.g. math
  * @apiSuccess (200) {String} data.assignments.description A short explanation what the task is
  * @apiSuccess (200) {Object} data.assignments.due The date the assignment is due to
  * @apiSuccess (200) {Number} data.assignments.due.year
