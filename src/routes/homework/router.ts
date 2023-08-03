@@ -1,11 +1,13 @@
 import express from 'express';
 import createHomeworkRouter from './createHomework';
-import getHomeworkRouter from './getHomework';
+import getAllHomeworkRouter from './getAllHomework';
+import getPaginatedHomeworkRouter from './getPaginatedHomework';
 
 const router = express.Router();
 
 router.use('/', createHomeworkRouter);
-router.use('/', getHomeworkRouter);
+router.use('/all', getAllHomeworkRouter);
+router.use('/', getPaginatedHomeworkRouter);
 router.all('/', (req, res) => {
     res.status(405).json({
         status: 'error',

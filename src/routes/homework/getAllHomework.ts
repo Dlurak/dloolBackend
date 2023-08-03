@@ -6,8 +6,8 @@ import { getHomeworkByClass } from '../../database/homework/findHomework';
 const router = express.Router();
 
 /**
- * @api {GET} /homework?class=:class&school=:school Get homework
- * @apiName Get Homework
+ * @api {GET} /homework/all?class=:class&school=:school Get all homework
+ * @apiName Get all homework
  * @apiGroup Homework
  * @apiVersion  1.0.0
  *
@@ -85,8 +85,6 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     const className = req.query.class;
     const schoolName = req.query.school;
-
-    // the uri can look like that: /homework?class=5a&school=Hogwarts
 
     if (!className) {
         res.status(400).json({
