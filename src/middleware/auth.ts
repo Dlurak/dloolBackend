@@ -10,7 +10,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
     if (!authHeader) {
         res.status(401).json({
             status: 'error',
-            message: 'Missing authorization header',
+            error: 'Missing authorization header',
         });
         return;
     }
@@ -21,7 +21,7 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
         if (err) {
             res.status(401).json({
                 status: 'error',
-                message: 'Invalid token',
+                error: 'Invalid token',
             });
             return;
         }
@@ -42,19 +42,19 @@ export default authenticate;
  *    }
  *
  * @apiError (401) {String} status The status of the request
- * @apiError (401) {String} message A short explaination of the error
+ * @apiError (401) {String} error A short explaination of the error
  *
  * @apiErrorExample {json} 401 - Missing authorization header:
  *    HTTP/1.1 401 Unauthorized
  *    {
  *       "status": "error",
- *       "message": "Missing authorization header"
+ *       "error": "Missing authorization header"
  *    }
  * @apiErrorExample {json} 401 - Invalid token:
  *    HTTP/1.1 401 Unauthorized
  *    {
  *       "status": "error",
- *       "message": "Invalid token"
+ *       "error": "Invalid token"
  *    }
  *
  * @apiPermission User
