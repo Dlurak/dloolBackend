@@ -1,6 +1,6 @@
 import { findUniqueSchoolById } from '../../../database/school/findSchool';
 import findUsername from '../../../database/user/findUser';
-import {getUniqueClassById} from '../../../database/classes/findClass'
+import { getUniqueClassById } from '../../../database/classes/findClass';
 import express from 'express';
 import authenticate from '../../../middleware/auth';
 
@@ -12,7 +12,7 @@ const router = express.Router();
  * @apiGroup Auth
  * @apiVersion 1.0.0
  * @apiDescription Get information about the currently logged in user
- * 
+ *
  * @apiSuccess (200) {String} status A short status of the request (success)
  * @apiSuccess (200) {String} message A short explaination of the response
  * @apiSuccess (200) {Object} data An object containing the data about the user
@@ -31,7 +31,7 @@ const router = express.Router();
  * @apiSuccess (200) {String} data.classes.name The name of the class
  * @apiSuccess (200) {String} data.classes.school The MongoDB ID of the school
  * @apiSuccess (200) {String[]} data.classes.members A list of all the MongoDB IDs of the members of a class including the ID of the requestor self
- * 
+ *
  * @apiSuccessExample {json} Success-Response:
  *    HTTP/1.1 200 OK
  *    X-Powered-By: Express
@@ -41,7 +41,7 @@ const router = express.Router();
  *    ETag: W/"21a-yV9CzJWdoBJXHCwymV4bFKpCjJY"
  *    Date: Thu, 03 Aug 2023 14:05:38 GMT
  *    Connection: close
- *    
+ *
  *    {
  *      "status": "success",
  *      "message": "successfully send data",
@@ -65,46 +65,47 @@ const router = express.Router();
  *        ]
  *      }
  *    }
- * 
+ *
  * @apiError (500) {String} status The status of the request (error)
  * @apiError (500) {String} error Could not find user
- * 
+ *
  * @apiErrorExample {json} 500 - User could not be found:
  *    HTTP/1.1 500 Internal Server Error
  *    {
  *       "status": "error",
  *       "error": "Could not find user"
  *    }
- * 
+ *
  * @apiUse jwtAuth
  */
 router.get('/', authenticate, async (req, res) => {
-    const rawData = await findUsername(res.locals.jwtPayload.username)
+    const rawData = await findUsername(res.locals.jwtPayload.username);
 
     if (rawData === null) {
         return res.status(500).json({
-            'status': 'error',
-            'error': "Could not find user"
-        })
+            status: 'error',
+            error: 'Could not find user',
+        });
     }
 
-    const school = await findUniqueSchoolById(rawData.school)
-    const classes = await Promise.all(rawData.classes.map(async (c) => await getUniqueClassById(c)))
-
+    const school = await findUniqueSchoolById(rawData.school);
+    const classes = await Promise.all(
+        rawData.classes.map(async (c) => await getUniqueClassById(c)),
+    );
 
     const data = {
         id: rawData._id,
         username: rawData.username,
         name: rawData.name,
         school,
-        classes
-    }
+        classes,
+    };
 
     res.status(200).json({
-        'status': "success",
-        "message": "successfully send data",
-        data
-    })
-})
+        status: 'success',
+        message: 'successfully send data',
+        data,
+    });
+});
 
-export default router
+export default router;
