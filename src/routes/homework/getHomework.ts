@@ -112,8 +112,6 @@ router.get('/', async (req, res) => {
 
     const classObj = await findClass(school, className as string);
 
-    console.log(classObj);
-
     if (!classObj) {
         res.status(400).json({
             status: 'error',
