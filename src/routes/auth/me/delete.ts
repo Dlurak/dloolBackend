@@ -23,6 +23,8 @@ const router = express.Router();
  *       "message": "Successfully deleted user",
  *       "data": "dlurak"
  *    }
+ *
+ * @apiUse jwtAuth
  */
 router.delete('/', authenticate, async (req, res) => {
     const username = res.locals.jwtPayload.username;
@@ -35,7 +37,7 @@ router.delete('/', authenticate, async (req, res) => {
         });
     }
 
-    deleteUser(user._id); 
+    deleteUser(user._id);
 
     res.status(200).json({
         status: 'success',
