@@ -124,6 +124,8 @@ router.get('/', async (req, res) => {
         return;
     }
 
+    // TODO: Add validation for the page data just as in the getSchools route with a middleware for that
+
     const homework = await getPaginatedData(
         homeworkCollection,
         pageNumber,
