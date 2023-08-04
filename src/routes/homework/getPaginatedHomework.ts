@@ -87,7 +87,7 @@ const router = express.Router();
  * @apiSuccess (200) {Number} data.homework.assignments.due.year
  * @apiSuccess (200) {Number} data.homework.assignments.due.month
  * @apiSuccess (200) {Number} data.homework.assignments.due.day
- * 
+ *
  * @apiUse pagination
  */
 router.get('/', pagination, async (req, res) => {

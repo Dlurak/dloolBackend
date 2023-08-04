@@ -6,6 +6,11 @@ export const schoolsCollection = db.collection('schools') as Collection<School>;
 schoolsCollection.createIndex({ name: 1 });
 schoolsCollection.createIndex({ uniqueName: 1 }, { unique: true });
 schoolsCollection.createIndex({ timezoneOffset: 1 });
+schoolsCollection.createIndex({
+    name: 'text',
+    description: 'text',
+    uniqueName: 'text',
+});
 
 export interface School {
     name: string;

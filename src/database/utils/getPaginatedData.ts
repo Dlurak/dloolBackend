@@ -7,6 +7,7 @@ import { Collection, SortDirection } from 'mongodb';
  * @param pageSize How many items per page
  * @param sortKey The optional key to sort by, defaults to _id
  * @param sortOrder The optional sort order, defaults to 1
+ * @param filter The optional filter to apply to the query
  * @returns A list of items from the collection
  */
 export function getPaginatedData(
@@ -15,6 +16,7 @@ export function getPaginatedData(
     pageSize: number,
     sortKey?: string,
     sortOrder?: SortDirection,
+    filter?: any,
 ) {
     if (pageNumber < 1) throw new Error('Page number must be greater than 0');
     if (pageSize < 1) throw new Error('Page size must be greater than 0');
@@ -29,7 +31,7 @@ export function getPaginatedData(
     }
 
     return collection
-        .find()
+        .find(filter || {})
         .sort({ [sortKey]: sortOrder })
         .skip(skip)
         .limit(pageSize)

@@ -6,10 +6,13 @@ import pagination from '../../middleware/pagination';
 const router = express.Router();
 
 /**
- * @api {GET} /schools?page=:page&pageSize=:pageSize Get schools
+ * @api {GET} /schools?page=:page&pageSize=:pageSize&q=:q Get schools
  * @apiName Get schools
  * @apiGroup Schools
  * @apiVersion  1.0.0
+ *
+ * @apiQuery {String} [:q] The search term to search for, it will search in the name, uniqueName and description fields, a bad value can result in no results.
+ *    When not provided it will return all schools from the given page.
  *
  * @apiExample {curl} Example usage - curl:
  *   curl http://localhost:3000/schools?page=1&pageSize=10
@@ -17,7 +20,8 @@ const router = express.Router();
  *   import requests
  *   page = 1
  *   page_size = 10
- *   response = requests.get(f'http://localhost:3000/schools?page={page}&pageSize={page_size}')
+ *   search_term = input('Search term: ')
+ *   response = requests.get(f'http://localhost:3000/schools?page={page}&pageSize={page_size}&q={search_term}')
  *   print(response.json())
  * @apiExample {javascript} Example usage - javascript:
  *   const page = 1;
@@ -70,13 +74,35 @@ const router = express.Router();
 router.get('/', pagination, async (req, res) => {
     const { page, pageSize } = res.locals.pagination;
 
+    const searchTerm = req.query.q;
+
+    let searchFilter;
+
+    if (searchTerm) {
+        searchFilter = {
+            $text: {
+                $search: searchTerm,
+                $caseSensitive: false,
+                $diacriticSensitive: false,
+            },
+        };
+    }
+
     return res.status(200).json({
         status: 'success',
         message: 'Schools found',
         data: {
-            scshools: await getPaginatedData(schoolsCollection, page, pageSize),
+            scshools: await getPaginatedData(
+                schoolsCollection,
+                page,
+                pageSize,
+                '_id',
+                1,
+                searchFilter || {},
+            ),
             totalPageCount: Math.ceil(
-                (await schoolsCollection.countDocuments()) / pageSize,
+                (await schoolsCollection.countDocuments(searchFilter || {})) /
+                    pageSize,
             ),
         },
     });
