@@ -11,7 +11,7 @@ const router = express.Router();
  * @apiVersion 1.0.0
  *
  * @apiQuery {String} [:school] The name of the school to get the classes from
- * 
+ *
  * @apiExample {curl} Example usage - curl:
  *   curl http://localhost:3000/classes?school=School
  * @apiExample {python} Example usage - python:
@@ -28,7 +28,7 @@ const router = express.Router();
  *   school := 'School'
  *   resp := http.get('http://localhost:3000/classes?school=${school}')!
  *   println(resp.body)
- * 
+ *
  * @apiSuccess (200) {String} status The status of the request (success)
  * @apiSuccess (200) {String} message A short message about the status of the request
  * @apiSuccess (200) {Object[]} data The data returned by the request
@@ -36,7 +36,7 @@ const router = express.Router();
  * @apiSuccess (200) {String} data.name The name of the class
  * @apiSuccess (200) {String} data.school The MongoDB ID of the school the class is in
  * @apiSuccess (200) {String[]} data.members The MongoDB IDs of the members of the class
- * 
+ *
  * @apiSuccessExample {json} Success-Response:
  *    HTTP/1.1 200 OK
  *    {
@@ -55,13 +55,13 @@ const router = express.Router();
  *        }
  *      ]
  *    }
- * 
+ *
  * @apiError (400) {String} status The status of the request (error)
  * @apiError (400) {String} error A short message about the error
- * 
+ *
  * @apiError (404) {String} status The status of the request (error)
  * @apiError (404) {String} error A short message about the error
- * 
+ *
  * @apiErrorExample {json} 400 - Missing required query paramter:
  *    HTTP/1.1 400 Bad Request
  *    {
