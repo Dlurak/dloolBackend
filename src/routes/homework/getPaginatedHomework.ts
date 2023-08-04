@@ -3,6 +3,7 @@ import { findClass } from '../../database/classes/findClass';
 import express from 'express';
 import { getPaginatedData } from '../../database/utils/getPaginatedData';
 import { homeworkCollection } from '../../database/homework/homework';
+import pagination from '../../middleware/pagination';
 
 const router = express.Router();
 
@@ -86,9 +87,11 @@ const router = express.Router();
  * @apiSuccess (200) {Number} data.homework.assignments.due.year
  * @apiSuccess (200) {Number} data.homework.assignments.due.month
  * @apiSuccess (200) {Number} data.homework.assignments.due.day
+ * 
+ * @apiUse pagination
  */
-router.get('/', async (req, res) => {
-    const requiredQueryParams = ['class', 'school', 'page', 'pageSize'];
+router.get('/', pagination, async (req, res) => {
+    const requiredQueryParams = ['class', 'school'];
 
     for (const param of requiredQueryParams) {
         if (!req.query[param]) {
@@ -102,8 +105,6 @@ router.get('/', async (req, res) => {
 
     const className = req.query.class;
     const schoolName = req.query.school;
-    const pageNumber = Number(req.query.page);
-    const pageSize = Number(req.query.pageSize);
 
     const school = await findUniqueSchool(schoolName as string);
     if (!school) {
@@ -124,13 +125,9 @@ router.get('/', async (req, res) => {
         return;
     }
 
-    // TODO: Add validation for the page data just as in the getSchools route with a middleware for that
+    const { page, pageSize } = res.locals.pagination;
 
-    const homework = await getPaginatedData(
-        homeworkCollection,
-        pageNumber,
-        pageSize,
-    );
+    const homework = await getPaginatedData(homeworkCollection, page, pageSize);
 
     res.status(200).json({
         status: 'success',
