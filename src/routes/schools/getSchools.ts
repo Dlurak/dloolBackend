@@ -92,7 +92,7 @@ router.get('/', pagination, async (req, res) => {
         status: 'success',
         message: 'Schools found',
         data: {
-            scshools: await getPaginatedData(
+            schools: await getPaginatedData(
                 schoolsCollection,
                 page,
                 pageSize,

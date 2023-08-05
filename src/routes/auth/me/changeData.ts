@@ -13,11 +13,11 @@ const router = express.Router();
  * @apiDescription Change the currently logged in user's data. After changing the username,
  *    the user will need to create a new token or a lot of endpoints will have a 500 error.
  *    This can be done using the /auth/login endpoint.
- * 
+ *
  * @apiBody (Body) {String} [username] The new username
  * @apiBody (Body) {String} [name] The new name
  * @apiBody (Body) {String} [password] The new password
- * 
+ *
  * @apiExample {curl} Example usage - curl:
  *    curl -X PATCH -H "Content-Type: application/json" -d '{"username": "dlurak", "name": "Dlurak"}' http://localhost:3000/auth/me
  * @apiExample {JavaScript} Example usage - JavaScript:
@@ -29,10 +29,10 @@ const router = express.Router();
  *       })
  *    });
  *    console.log(await response.json());
- * 
+ *
  * @apiSuccess (200) {String} status A short status of the request (success)
  * @apiSuccess (200) {String} message A short explaination of the response
- * 
+ *
  * @apiSuccessExample {json} Success-Response:
  *    HTTP/1.1 200 OK
  *    X-Powered-By: Express
@@ -42,16 +42,16 @@ const router = express.Router();
  *    ETag: W/"3f-Ag5/LYYmO55gKyeWLD86Spb1/sw"
  *    Date: Fri, 04 Aug 2023 21:10:14 GMT
  *    Connection: close
- *    
+ *
  *    {
  *      "status": "success",
  *      "message": "Successfully changed user data"
  *    }
- * 
+ *
  * @apiError (500) {String} status A short status of the request (error)
  * @apiError (500) {String} error A short explaination of the error
  * @apiError (500) {String} hint A hint to what the user can try to fix the error
- * 
+ *
  * @apiErrorExample {json} 500 - User not found:
  *    HTTP/1.1 500 Can't find user
  *    {
@@ -59,7 +59,7 @@ const router = express.Router();
  *       "message": "User not found",
  *       "hint": "Maybe you changed your username? In that case you need to login again!"
  *    }
- * 
+ *
  * @apiUse jwtAuth
  */
 router.patch('/', authenticate, async (req, res) => {
@@ -78,7 +78,7 @@ router.patch('/', authenticate, async (req, res) => {
         return res.status(500).json({
             status: 'error',
             error: 'User not found',
-            hint: 'Maybe you changed your username? In that case you need to login again!'
+            hint: 'Maybe you changed your username? In that case you need to login again!',
         });
     }
 
