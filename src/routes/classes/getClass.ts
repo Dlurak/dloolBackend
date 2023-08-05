@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @api {GET} /classes?school=:school Get classes
- * @apiName GEt classes
+ * @apiName Get classes
  * @apiGroup Classes
  * @apiVersion 1.0.0
  *
