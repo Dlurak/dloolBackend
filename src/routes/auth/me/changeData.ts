@@ -50,7 +50,7 @@ const router = express.Router();
  *
  * @apiError (400) {String} status A short status of the request (error)
  * @apiError (400) {String} error A short explaination of the error
- * 
+ *
  * @apiError (500) {String} status A short status of the request (error)
  * @apiError (500) {String} error A short explaination of the error
  * @apiError (500) {String} hint A hint to what the user can try to fix the error
@@ -69,7 +69,7 @@ const router = express.Router();
  *       "status": "error",
  *       "message": "No data to change"
  *    }
- * 
+ *
  * @apiUse jwtAuth
  */
 router.patch('/', authenticate, async (req, res) => {
@@ -95,7 +95,7 @@ router.patch('/', authenticate, async (req, res) => {
     if (!options.username && !options.name && !options.password) {
         return res.status(400).json({
             status: 'error',
-            error: 'No data to change'
+            error: 'No data to change',
         });
     }
 
