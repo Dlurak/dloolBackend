@@ -48,6 +48,9 @@ const router = express.Router();
  *      "message": "Successfully changed user data"
  *    }
  *
+ * @apiError (400) {String} status A short status of the request (error)
+ * @apiError (400) {String} error A short explaination of the error
+ * 
  * @apiError (500) {String} status A short status of the request (error)
  * @apiError (500) {String} error A short explaination of the error
  * @apiError (500) {String} hint A hint to what the user can try to fix the error
@@ -60,6 +63,13 @@ const router = express.Router();
  *       "hint": "Maybe you changed your username? In that case you need to login again!"
  *    }
  *
+ * @apiErrorExample {json} 400 - No data to change:
+ *    HTTP/1.1 400 Bad Request
+ *    {
+ *       "status": "error",
+ *       "message": "No data to change"
+ *    }
+ * 
  * @apiUse jwtAuth
  */
 router.patch('/', authenticate, async (req, res) => {
@@ -79,6 +89,13 @@ router.patch('/', authenticate, async (req, res) => {
             status: 'error',
             error: 'User not found',
             hint: 'Maybe you changed your username? In that case you need to login again!',
+        });
+    }
+
+    if (!options.username && !options.name && !options.password) {
+        return res.status(400).json({
+            status: 'error',
+            error: 'No data to change'
         });
     }
 
