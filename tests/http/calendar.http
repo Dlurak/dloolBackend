@@ -1,0 +1,2 @@
+GET http://127.0.0.1:3000/homework/calendar
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRsdXJhayIsImlhdCI6MTY5MTkyODE1OCwiZXhwIjoxNjkxOTMxNzU4fQ.gKmaDEmrajPieT7seShe_C1sHJcbz0CoPxeJKZB3WSU

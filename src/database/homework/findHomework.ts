@@ -1,5 +1,8 @@
 import { ObjectId } from 'mongodb';
 import { homeworkCollection } from './homework';
+import findUsername from '../user/findUser';
+import { classesCollection } from '../classes/class';
+import { findUniqueSchool } from '../school/findSchool';
 
 export function getHomeworkByClass(classId: ObjectId) {
     return homeworkCollection.find({ class: classId }).toArray();
@@ -43,4 +46,20 @@ export async function getNewestHomeworkFromClass(classId: ObjectId) {
             return value[0];
         }
     });
+}
+
+export async function getHomeworkForUser(username: string) {
+    const user = await findUsername(username);
+
+    if (!user) {
+        return null;
+    }
+
+    const classes = user.classes;
+
+    return homeworkCollection.find({ class: { $in: classes } }).toArray();
+}
+
+export async function getHomeworkForMultipleClasses(classes: ObjectId[]) {
+    return homeworkCollection.find({ class: { $in: classes } }).toArray();
 }
