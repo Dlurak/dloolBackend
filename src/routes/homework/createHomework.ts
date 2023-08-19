@@ -1,3 +1,4 @@
+import { isDateValid } from '../../utils/date';
 import express from 'express';
 import authenticate from '../../middleware/auth';
 import findUsername from '../../database/user/findUser';
@@ -6,14 +7,9 @@ import { findClass } from '../../database/classes/findClass';
 import { createHomework } from '../../database/homework/createHomework';
 import { WithId } from 'mongodb';
 import { Homework } from '../../database/homework/homework';
+import { sortDate } from '../../utils/date';
 
 const router = express.Router();
-
-interface Date {
-    year: number;
-    month: number;
-    day: number;
-}
 
 /**
  * @api {post} /homework Create a new homework
@@ -317,37 +313,5 @@ router.post('/', authenticate, async (req, res) => {
         return;
     });
 });
-
-function isDateValid(date: Date) {
-    const { year, month, day } = date;
-
-    if (
-        typeof year !== 'number' ||
-        typeof month !== 'number' ||
-        typeof day !== 'number'
-    ) {
-        return false;
-    }
-
-    if (month < 1 || month > 12) {
-        return false;
-    }
-
-    if (day < 1 || day > 31) {
-        return false;
-    }
-
-    return true;
-}
-
-function sortDate(date: Date) {
-    const { year, month, day } = date;
-
-    return {
-        year,
-        month,
-        day,
-    };
-}
 
 export default router;

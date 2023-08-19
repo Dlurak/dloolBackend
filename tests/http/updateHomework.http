@@ -1,0 +1,22 @@
+PUT http://localhost:3000/homework/64ce7f623a76b127377067b9
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRsdXJhayIsImlhdCI6MTY5MjQzMDgwMSwiZXhwIjoxNjkyNDM0NDAxfQ.So9LC35aW0aZkNkTSIhl9-CGS-bbFT12kqEIDrZHDG0
+Content-Type: application/json
+
+{
+    "from": {
+        "month": 5,
+        "year": 2021,
+        "day": 1
+    },
+    "assignments": [
+        {
+            "subject": "Math",
+            "description": "Do the homework",
+            "due": {
+                "year": 2021,
+                "month": 5,
+                "day": 2
+            }
+        }
+    ]
+}
