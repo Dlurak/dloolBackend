@@ -4,6 +4,7 @@ import getAllHomeworkRouter from './getAllHomework';
 import getPaginatedHomeworkRouter from './getPaginatedHomework';
 import calendarRouter from './calendar/calendar';
 import updateHomeworkRouter from './updateHomework';
+import deleteHomeworkRouter from './deleteHomework';
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.use('/all', getAllHomeworkRouter);
 router.use('/', getPaginatedHomeworkRouter);
 router.use('/', calendarRouter);
 router.use('/', updateHomeworkRouter);
+router.use('/', deleteHomeworkRouter);
 router.all('/', (req, res) => {
     res.status(405).json({
         status: 'error',

@@ -29,7 +29,7 @@ const router = express.Router();
  *
  * @apiExample {curl} Curl example:
  *    curl -X PUT -H "Content-Type: application/json" -d '{"from": {"year": 2023, "month": 8, "day": 19}, "assignments": [{"subject": "Math", "description": "Do the math homework", "due": {"year": 2023, "month": 8, "day": 19}}]}' http://localhost:3000/homework/6120b0b0b4b7c4b4b4b4b4b4
- * 
+ *
  * @apiExample {javascript} JavaScript example:
  *    const data = {
  *        "from": {
@@ -49,7 +49,7 @@ const router = express.Router();
  *            }
  *        ]
  *    };
- *    
+ *
  *    const res = await fetch('http://localhost:3000/homework/6120b0b0b4b7c4b4b4b4b4b4', {
  *        method: 'PUT',
  *        body: JSON.stringify(data),
@@ -59,7 +59,7 @@ const router = express.Router();
  *    });
  *    const fetchedData = await res.json();
  *    console.log(fetchedData);
- * 
+ *
  * @apiExample {Python} Python example
  *    import requests
  *    data = {
@@ -82,7 +82,7 @@ const router = express.Router();
  *    }
  *    res = requests.put('http://localhost:3000/homework/6120b0b0b4b7c4b4b4b4b4b4', json=data)
  *    print(res.json())
- * 
+ *
  * @apiSuccess (200) {String} status The status of the request
  * @apiSuccess (200) {String} message The message of the request
  * @apiSuccess (200) {Object} data The updated homework
@@ -100,16 +100,16 @@ const router = express.Router();
  * @apiSuccess (200) {String} data.class MongoDB ObjectID of the class
  * @apiSuccess (200) {String} data.creator MongoDB ObjectID of the creator
  * @apiSuccess (200) {Number} data.createdAt Timestamp of the creation date
- * 
+ *
  * @apiError (400) {String} status The status of the request
  * @apiError (400) {String} message The message of the request
- * 
+ *
  * @apiError (404) {String} status The status of the request
  * @apiError (404) {String} message The message of the request
- * 
+ *
  * @apiError (500) {String} status The status of the request
  * @apiError (500) {String} message The message of the request
- * 
+ *
  * @apiErrorExample {json} 400 Invalid homework ID
  *    HTTP/1.1 400 Bad Request
  *    X-Powered-By: Express
@@ -119,12 +119,12 @@ const router = express.Router();
  *    ETag: W/"32-Qb3jIZDhZi8m7T8r1oIUufPqTZc"
  *    Date: Sat, 19 Aug 2023 08:26:07 GMT
  *    Connection: close
- *    
+ *
  *    {
  *      "status": "error",
  *      "message": "Invalid homework ID"
  *    }
- * 
+ *
  * @apiErrorExample {json} 404 Homework not found
  *    HTTP/1.1 404 Not Found
  *    X-Powered-By: Express
@@ -134,53 +134,53 @@ const router = express.Router();
  *    ETag: W/"31-Nom76KIznqfFwuLQMhdn8bW+7nk"
  *    Date: Sat, 19 Aug 2023 08:28:57 GMT
  *    Connection: close
- *    
+ *
  *    {
  *      "status": "error",
  *      "message": "Homework not found"
  *    }
- * 
+ *
  * @apiErrorExample {json} 400 Invalid "from" field
  *    {
  *        status: 'error',
  *        message: 'Invalid "from" field'
  *    }
- * 
+ *
  * @apiErrorExample {json} 400 - Missing "assignments" field:
  *    HTTP/1.1 400 Bad Request
  *    {
  *       "status": "error",
  *       "message": "Missing \"assignments\" field"
  *    }
- * 
+ *
  * @apiErrorExample {json} 400 - Invalid "assignments" field:
  *    HTTP/1.1 400 Bad Request
  *    {
  *       "status": "error",
  *       "message": "Invalid \"assignments\" field"
  *    }
- * 
+ *
  * @apiErrorExample {json} 400 - Invalid "subject" or "description" field:
  *    HTTP/1.1 400 Bad Request
  *    {
  *       "status": "error",
  *       "message": "Invalid \"subject\" or \"description\" field"
  *    }
- * 
+ *
  * @apiErrorExample {json} 400 - Invalid "due" field:
  *    HTTP/1.1 400 Bad Request
  *    {
  *       "status": "error",
  *       "message": "Invalid \"due\" field"
  *    }
- * 
+ *
  * @apiErrorExample {json} 500 - Internal server error:
  *    HTTP/1.1 500 Internal Server Error
  *    {
  *       "status": "error",
  *       "message": "Internal server error"
  *    }
- * 
+ *
  * @apiUse jwtAuth
  */
 router.put('/:id', authenticate, async (req, res) => {
