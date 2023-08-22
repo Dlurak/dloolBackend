@@ -5,7 +5,7 @@ import findUsername from '../user/findUser';
 import { addMemberToClass } from '../classes/update';
 import { addToClassRequestsCollection } from './addToClassRequests';
 
-export async function acceptRequest(id: ObjectId) {
+export async function acceptRequest(id: ObjectId, processedBy: ObjectId) {
     const request = await findSpecificRequestById(id);
 
     if (!request) return false;
@@ -28,16 +28,19 @@ export async function acceptRequest(id: ObjectId) {
 
     await addToClassRequestsCollection.findOneAndUpdate(
         { _id: id },
-        { $set: { status: 'accepted' } },
+        { $set: { status: 'accepted', processedBy } },
     );
 
     return true;
 }
 
-export async function rejectRequest(id: ObjectId) {
+export async function rejectRequest(
+    id: ObjectId,
+    processedBy: ObjectId,
+): Promise<boolean> {
     const thing = await addToClassRequestsCollection.findOneAndUpdate(
         { _id: id },
-        { $set: { status: 'rejected' } },
+        { $set: { status: 'rejected', processedBy } },
     );
 
     if (!thing.value) return false;

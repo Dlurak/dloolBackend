@@ -22,6 +22,7 @@ export async function createAddToClassRequest(request: AddToClassRequest) {
 
     request.createdAt = Date.now();
     request.status = 'pending';
+    request.processedBy = null;
 
     return addToClassRequestsCollection
         .insertOne(request)

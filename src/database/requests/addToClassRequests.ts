@@ -5,6 +5,8 @@ export const addToClassRequestsCollection = db.collection(
     'addToClassRequests',
 ) as Collection<AddToClassRequest>;
 
+export type AddToClassRequestStatus = 'pending' | 'accepted' | 'rejected';
+
 export interface AddToClassRequest {
     userDetails: {
         name: string;
@@ -16,5 +18,6 @@ export interface AddToClassRequest {
     };
     classId: ObjectId;
     createdAt: number;
-    status: 'pending' | 'accepted' | 'rejected';
+    status: AddToClassRequestStatus;
+    processedBy: ObjectId | null;
 }
