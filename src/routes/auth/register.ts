@@ -6,6 +6,8 @@ import { findUniqueSchool } from '../../database/school/findSchool';
 import { findClass } from '../../database/classes/findClass';
 import findUsername from '../../database/user/findUser';
 import { addMemberToClass } from '../../database/classes/update';
+import { createAddToClassRequest } from '../../database/requests/createAddToClassRequest';
+import { AddToClassRequest } from '../../database/requests/addToClassRequests';
 
 const router = express.Router();
 
@@ -25,12 +27,24 @@ const router = express.Router();
  *
  * @apiSuccess (201) {String} status Status of the request (success).
  * @apiSuccess (201) {String} message Message of the request (User created).
- * @apiSuccessExample {json} Success-Response:
+ * @apiSuccess (201) {}Object [data] Data of the request.
+ * @apiSuccess (201) {String} data.id The id of the request.
+ * @apiSuccessExample {json} Register success:
  *    HTTP/1.1 201 Created
- *   {
- *      "status": "success",
- *     "message": "User created"
- *   }
+ *    {
+ *       "status": "success",
+ *       "message": "User created"
+ *    }
+ *
+ * @apiSuccessExample {json} Signup-request success:
+ *    HTTP/1.1 201 Created
+ *    {
+ *       "status": "success",
+ *       "message": "Successfully created request",
+ *       "data": {
+ *           id: "5f9a3b3b9f6b3b1b3c9f6b3b"
+ *        }
+ *    }
  *
  * @apiExample {curl} Curl example:
  *   curl -X POST -H "Content-Type: application/json" -d '{"username": "username", "name": "name", "password": "password", "school": "school", "class": "class"}' http://localhost:3000/auth/register
@@ -113,60 +127,111 @@ router.post('/', async (req, res) => {
             error: `User ${body.username} already exists`,
         });
         return;
-    } else {
-        // body.school is the unique name so we need to find the id
+    }
 
-        const school = await findUniqueSchool(body.school as string);
-        if (school === null) {
-            res.status(400).json({
-                status: 'error',
-                error: `School ${body.school} does not exist`,
-            });
-            return;
-        }
-        const schoolId = school._id;
-        const classObject = await findClass(school, body.class as string);
-        if (classObject === null) {
-            res.status(400).json({
-                status: 'error',
-                error: `Class ${body.class} does not exist`,
-            });
-            return;
-        }
+    // body.school is the unique name so we need to find the id
 
-        const user: User = {
-            username: body.username,
-            name: body.name,
-            password: body.password,
-            school: schoolId,
-            classes: [classObject._id],
+    const school = await findUniqueSchool(body.school as string);
+    if (school === null) {
+        res.status(400).json({
+            status: 'error',
+            error: `School ${body.school} does not exist`,
+        });
+        return;
+    }
+    const schoolId = school._id;
+    const classObject = await findClass(school, body.class as string);
+    if (classObject === null) {
+        res.status(400).json({
+            status: 'error',
+            error: `Class ${body.class} does not exist`,
+        });
+        return;
+    }
+
+    const user: User = {
+        username: body.username,
+        name: body.name,
+        password: body.password,
+        school: schoolId,
+        classes: [classObject._id],
+    };
+
+    // check if the class already has a user
+    const users = classObject.members;
+    if (users.length > 0) {
+        // create a request
+        const addToClassRequest: AddToClassRequest = {
+            userDetails: {
+                name: body.name,
+                username: body.username,
+                createdAt: Date.now(),
+                school: schoolId,
+                password: body.password,
+                acceptedClasses: [],
+            },
+            classId: classObject._id,
+            createdAt: Date.now(),
+            status: 'pending',
+            processedBy: null,
         };
 
-        if (await createUser(user)) {
-            const newUser = await findUsername(body.username);
-            if (newUser === null) {
-                res.status(500).json({
-                    status: 'error',
-                    error: 'Internal server error',
-                });
-                return;
-            }
+        const newRequest = await createAddToClassRequest({
+            userDetails: {
+                name: body.name,
+                username: body.username,
+                createdAt: Date.now(),
+                school: schoolId,
+                password: body.password,
+                acceptedClasses: [],
+            },
+            classId: classObject._id,
+            createdAt: Date.now(),
+            status: 'pending',
+            processedBy: null,
+        });
 
-            const userId = newUser._id;
-            addMemberToClass(classObject._id, userId);
-
-            res.status(201).json({
-                status: 'success',
-                message: 'User created',
-            });
-            return;
-        } else {
+        if (!newRequest) {
             res.status(500).json({
                 status: 'error',
                 error: 'Internal server error',
             });
             return;
         }
+
+        return res.status(201).json({
+            status: 'success',
+            message: 'Successfully created request',
+            data: {
+                id: newRequest._id,
+            },
+        });
+    }
+
+    if (await createUser(user)) {
+        const newUser = await findUsername(body.username);
+        if (newUser === null) {
+            res.status(500).json({
+                status: 'error',
+                error: 'Internal server error',
+            });
+            return;
+        }
+
+        const userId = newUser._id;
+        addMemberToClass(classObject._id, userId);
+
+        res.status(201).json({
+            status: 'success',
+            message: 'User created',
+        });
+        return;
+    } else {
+        res.status(500).json({
+            status: 'error',
+            error: 'Internal server error',
+        });
+        return;
     }
 });
 

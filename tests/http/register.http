@@ -1,9 +1,9 @@
-POST http://localhost:3000/user/register
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
     "username": "dlurak",
-    "name": "Dlurak",
+    "name": "test",
     "password": "test",
     "school": "school",
     "class": "class"

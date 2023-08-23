@@ -1,0 +1,2 @@
+GET http://localhost:3000/auth/request?status=k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRsdXJhayIsImlhdCI6MTY5MjgwODU3OSwiZXhwIjoxNjkyODEyMTc5fQ.uzbtOsZAILUmU9GFleFJRw9TvTMv3uwlVmm8QhZ2cc4
