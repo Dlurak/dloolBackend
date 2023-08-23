@@ -4,6 +4,7 @@ import {
     AddToClassRequest,
     addToClassRequestsCollection,
 } from './addToClassRequests';
+import { hashSync } from 'bcrypt';
 
 export async function createAddToClassRequest(request: AddToClassRequest) {
     const username = request.userDetails.username;
@@ -23,6 +24,9 @@ export async function createAddToClassRequest(request: AddToClassRequest) {
     request.createdAt = Date.now();
     request.status = 'pending';
     request.processedBy = null;
+    const clearPassword = request.userDetails.password;
+    const hashedPassword = hashSync(clearPassword, 10);
+    request.userDetails.password = hashedPassword;
 
     return addToClassRequestsCollection
         .insertOne(request)

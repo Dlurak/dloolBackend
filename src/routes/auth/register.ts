@@ -6,6 +6,8 @@ import { findUniqueSchool } from '../../database/school/findSchool';
 import { findClass } from '../../database/classes/findClass';
 import findUsername from '../../database/user/findUser';
 import { addMemberToClass } from '../../database/classes/update';
+import { createAddToClassRequest } from '../../database/requests/createAddToClassRequest';
+import { AddToClassRequest } from '../../database/requests/addToClassRequests';
 
 const router = express.Router();
 
@@ -113,60 +115,108 @@ router.post('/', async (req, res) => {
             error: `User ${body.username} already exists`,
         });
         return;
-    } else {
-        // body.school is the unique name so we need to find the id
+    }
 
-        const school = await findUniqueSchool(body.school as string);
-        if (school === null) {
-            res.status(400).json({
-                status: 'error',
-                error: `School ${body.school} does not exist`,
-            });
-            return;
-        }
-        const schoolId = school._id;
-        const classObject = await findClass(school, body.class as string);
-        if (classObject === null) {
-            res.status(400).json({
-                status: 'error',
-                error: `Class ${body.class} does not exist`,
-            });
-            return;
-        }
+    // body.school is the unique name so we need to find the id
 
-        const user: User = {
-            username: body.username,
-            name: body.name,
-            password: body.password,
-            school: schoolId,
-            classes: [classObject._id],
+    const school = await findUniqueSchool(body.school as string);
+    if (school === null) {
+        res.status(400).json({
+            status: 'error',
+            error: `School ${body.school} does not exist`,
+        });
+        return;
+    }
+    const schoolId = school._id;
+    const classObject = await findClass(school, body.class as string);
+    if (classObject === null) {
+        res.status(400).json({
+            status: 'error',
+            error: `Class ${body.class} does not exist`,
+        });
+        return;
+    }
+
+    const user: User = {
+        username: body.username,
+        name: body.name,
+        password: body.password,
+        school: schoolId,
+        classes: [classObject._id],
+    };
+
+    // check if the class already has a user
+    const users = classObject.members;
+    if (users.length > 0) {
+        // create a request
+        const addToClassRequest: AddToClassRequest = {
+            userDetails: {
+                name: body.name,
+                username: body.username,
+                createdAt: Date.now(),
+                school: schoolId,
+                password: body.password,
+                acceptedClasses: [],
+            },
+            classId: classObject._id,
+            createdAt: Date.now(),
+            status: 'pending',
+            processedBy: null,
         };
 
-        if (await createUser(user)) {
-            const newUser = await findUsername(body.username);
-            if (newUser === null) {
-                res.status(500).json({
-                    status: 'error',
-                    error: 'Internal server error',
-                });
-                return;
-            }
+        const newRequest = await createAddToClassRequest({
+            userDetails: {
+                name: body.name,
+                username: body.username,
+                createdAt: Date.now(),
+                school: schoolId,
+                password: body.password,
+                acceptedClasses: [],
+            },
+            classId: classObject._id,
+            createdAt: Date.now(),
+            status: 'pending',
+            processedBy: null,
+        });
 
-            const userId = newUser._id;
-            addMemberToClass(classObject._id, userId);
-
-            res.status(201).json({
-                status: 'success',
-                message: 'User created',
-            });
-            return;
-        } else {
+        if (!newRequest) {
             res.status(500).json({
                 status: 'error',
                 error: 'Internal server error',
             });
             return;
         }
+
+        return res.status(201).json({
+            status: 'success',
+            message: 'Successfully created request',
+        });
+    }
+
+    if (await createUser(user)) {
+        const newUser = await findUsername(body.username);
+        if (newUser === null) {
+            res.status(500).json({
+                status: 'error',
+                error: 'Internal server error',
+            });
+            return;
+        }
+
+        const userId = newUser._id;
+        addMemberToClass(classObject._id, userId);
+
+        res.status(201).json({
+            status: 'success',
+            message: 'User created',
+        });
+        return;
+    } else {
+        res.status(500).json({
+            status: 'error',
+            error: 'Internal server error',
+        });
+        return;
     }
 });
 
