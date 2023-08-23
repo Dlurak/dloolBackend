@@ -27,6 +27,8 @@ const router = express.Router();
  *
  * @apiSuccess (201) {String} status Status of the request (success).
  * @apiSuccess (201) {String} message Message of the request (User created).
+ * @apiSuccess (201) {}Object [data] Data of the request.
+ * @apiSuccess (201) {String} data.id The id of the request.
  * @apiSuccessExample {json} Register success:
  *    HTTP/1.1 201 Created
  *    {
@@ -38,7 +40,10 @@ const router = express.Router();
  *    HTTP/1.1 201 Created
  *    {
  *       "status": "success",
- *       "message": "Successfully created request"
+ *       "message": "Successfully created request",
+ *       "data": {
+ *           id: "5f9a3b3b9f6b3b1b3c9f6b3b"
+ *        }
  *    }
  *
  * @apiExample {curl} Curl example:
@@ -197,6 +202,9 @@ router.post('/', async (req, res) => {
         return res.status(201).json({
             status: 'success',
             message: 'Successfully created request',
+            data: {
+                id: newRequest._id,
+            },
         });
     }
 
