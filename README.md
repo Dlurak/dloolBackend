@@ -32,15 +32,14 @@ These are only features, bugs and refactorings that I want to do until the first
 
 These are things that I want to add but are not necessary for the first release.
 
--   [ ] An API endpoint to get a list of all schools
--   [ ] An API endpoint to get a list of all classes
--   [ ] An API endpoint to get a list of all users
--   [ ] Moderation
--   [ ] Change user data
+-   [x] An API endpoint to get a list of all schools
+-   [x] An API endpoint to get a list of all classes
+-   [ ] Moderation _Currently working on it, on the branch `moderation`_
+-   [x] Change user data
 -   [ ] Block Bots
--   [ ] Delete homework
--   [ ] Modify homework
--   [ ] Support for multiple output formats like json, xml, csv
+-   [x] Delete homework
+-   [x] Modify homework
+-   [x] Support for multiple output formats like json, csv, iCal, todo.txt (_partilly implemented for ical and todo.txt is planned for the frontend_)
 
 ## Installation
 
