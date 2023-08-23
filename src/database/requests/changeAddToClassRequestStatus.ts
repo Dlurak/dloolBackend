@@ -11,7 +11,7 @@ export async function acceptRequest(id: ObjectId, processedBy: ObjectId) {
     if (!request) return false;
     if (request.status !== 'pending') return false;
 
-    createUser({
+    await createUser({
         name: request.userDetails.name,
         username: request.userDetails.username,
         password: request.userDetails.password,
@@ -24,12 +24,16 @@ export async function acceptRequest(id: ObjectId, processedBy: ObjectId) {
 
     addMemberToClass(request.classId, newUser._id);
 
+    console.log('Hello 2');
+
     // update the request
 
     await addToClassRequestsCollection.findOneAndUpdate(
         { _id: id },
         { $set: { status: 'accepted', processedBy } },
     );
+
+    console.log('Hello 3');
 
     return true;
 }
