@@ -27,12 +27,19 @@ const router = express.Router();
  *
  * @apiSuccess (201) {String} status Status of the request (success).
  * @apiSuccess (201) {String} message Message of the request (User created).
- * @apiSuccessExample {json} Success-Response:
+ * @apiSuccessExample {json} Register success:
  *    HTTP/1.1 201 Created
- *   {
- *      "status": "success",
- *     "message": "User created"
- *   }
+ *    {
+ *       "status": "success",
+ *       "message": "User created"
+ *    }
+ *
+ * @apiSuccessExample {json} Signup-request success:
+ *    HTTP/1.1 201 Created
+ *    {
+ *       "status": "success",
+ *       "message": "Successfully created request"
+ *    }
  *
  * @apiExample {curl} Curl example:
  *   curl -X POST -H "Content-Type: application/json" -d '{"username": "username", "name": "name", "password": "password", "school": "school", "class": "class"}' http://localhost:3000/auth/register
