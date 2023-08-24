@@ -1,4 +1,4 @@
-import express, { Request } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
@@ -13,6 +13,17 @@ const app = express();
 
 app.use(express.json());
 app.use(cors<Request>());
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if (err instanceof SyntaxError && 'body' in err) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Invalid JSON',
+        });
+    } else {
+        next();
+    }
+});
 
 const port = +(process.env.PORT as string) || 3000;
 app.listen(port, '0.0.0.0', () => {
