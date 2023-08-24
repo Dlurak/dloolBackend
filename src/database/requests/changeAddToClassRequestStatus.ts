@@ -11,13 +11,16 @@ export async function acceptRequest(id: ObjectId, processedBy: ObjectId) {
     if (!request) return false;
     if (request.status !== 'pending') return false;
 
-    await createUser({
-        name: request.userDetails.name,
-        username: request.userDetails.username,
-        password: request.userDetails.password,
-        school: request.userDetails.school,
-        classes: [request.classId],
-    });
+    await createUser(
+        {
+            name: request.userDetails.name,
+            username: request.userDetails.username,
+            password: request.userDetails.password,
+            school: request.userDetails.school,
+            classes: [request.classId],
+        },
+        true,
+    );
     const newUser = await findUsername(request.userDetails.username);
 
     if (!newUser) return false;

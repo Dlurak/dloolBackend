@@ -10,6 +10,75 @@ import {
 
 const router = express.Router();
 
+/**
+ * @api {patch} /auth/requests/:id/:operator Process a request
+ * @apiName ProcessRequest
+ * @apiGroup Requests
+ * @apiDescription Process a request to join a class. The request must be pending. It can be accepted or rejected.
+ * @apiPermission The user must be a member of the class that the request is for
+ *
+ * @apiParam {String} id The ID of the request
+ * @apiParam {String} operator The operator to use. Must be either `accept` or `reject`
+ *
+ * @apiSuccess (200) {String} status The status of the request
+ * @apiSuccess (200) {String} message A message indicating the status of the request
+ *
+ * @apiError (400) {String} status The status of the request
+ * @apiError (400) {String} message A message indicating the status of the request
+ *
+ * @apiError (403) {String} status The status of the request
+ * @apiError (403) {String} message A message indicating the status of the request
+ *
+ * @apiError (404) {String} status The status of the request
+ * @apiError (404) {String} message A message indicating the status of the request
+ *
+ * @apiError (500) {String} status The status of the request
+ * @apiError (500) {String} message A message indicating the status of the request
+ *
+ * @apiSuccessExample {json} 200 - Success:
+ *    HTTP/1.1 200 OK
+ *    {
+ *       "status": "Success",
+ *       "message": "Request processed"
+ *    }
+ *
+ * @apiErrorExample {json} 400 - Invalid ID:
+ *    HTTP/1.1 400 Bad Request
+ *    {
+ *       "status": "error",
+ *       "message": "Invalid ID"
+ *    }
+ *
+ * @apiErrorExample {json} 400 - Request a  already processed:
+ *    HTTP/1.1 400 Bad Request
+ *    {
+ *       "status": "error",
+ *       "message": "Request is already processed"
+ *    }
+ *
+ * @apiErrorExample {json} 403 - User doesn't have access to class:
+ *    HTTP/1.1 403 Forbidden
+ *    {
+ *       "status": "error",
+ *       "message": "You don't have access to this class yourself"
+ *    }
+ *
+ * @apiErrorExample {json} 404 - Request not found:
+ *    HTTP/1.1 404 Not Found
+ *    {
+ *       "status": "error",
+ *       "message": "Request not found"
+ *    }
+ *
+ * @apiErrorExample {json} 500 - User not found:
+ *    HTTP/1.1 500 Internal Server Error
+ *    {
+ *       "status": "error",
+ *       "message": "User not found"
+ *    }
+ *
+ * @apiUse jwtAuth
+ */
 router.patch(
     '/:id/:operator(accept|reject)',
     authenticate,

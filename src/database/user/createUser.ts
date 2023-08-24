@@ -6,8 +6,9 @@ import { getUniqueClassById } from '../classes/findClass';
 /**
  * This function creates a user in the database and hashes the password
  * @param user The user to create the password should be in clear text
+ * @param hashedPassword Whether the password is already hashed
  */
-export function createUser(user: User) {
+export function createUser(user: User, hashedPassword = false) {
     // check that a school with the given id exists
     findUniqueSchoolById(user.school).then((school) => {
         if (school === null) {
@@ -26,7 +27,9 @@ export function createUser(user: User) {
     });
 
     const passwordClear = user.password;
-    const passwordHash = bcrypt.hashSync(passwordClear, 10);
+    const passwordHash = hashedPassword
+        ? user.password
+        : bcrypt.hashSync(passwordClear, 10);
 
     user.password = passwordHash;
 
