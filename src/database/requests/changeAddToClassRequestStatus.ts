@@ -27,16 +27,12 @@ export async function acceptRequest(id: ObjectId, processedBy: ObjectId) {
 
     addMemberToClass(request.classId, newUser._id);
 
-    console.log('Hello 2');
-
     // update the request
 
     await addToClassRequestsCollection.findOneAndUpdate(
         { _id: id },
         { $set: { status: 'accepted', processedBy } },
     );
-
-    console.log('Hello 3');
 
     return true;
 }

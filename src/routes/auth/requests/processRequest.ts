@@ -121,7 +121,6 @@ router.patch(
         const userClasses = userObj.classes;
 
         if (!userClasses.map(String).includes(String(document.classId))) {
-            console.log(userClasses, document.classId);
             return res.status(403).json({
                 status: 'error',
                 message: "You don't have access to this class yourself",
