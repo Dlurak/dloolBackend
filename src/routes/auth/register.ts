@@ -27,7 +27,7 @@ const router = express.Router();
  *
  * @apiSuccess (201) {String} status Status of the request (success).
  * @apiSuccess (201) {String} message Message of the request (User created).
- * @apiSuccess (201) {}Object [data] Data of the request.
+ * @apiSuccess (201) {Object} [data] Data of the request.
  * @apiSuccess (201) {String} data.id The id of the request.
  * @apiSuccessExample {json} Register success:
  *    HTTP/1.1 201 Created
