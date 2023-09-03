@@ -1,7 +1,0 @@
-PATCH http://localhost:3000/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWF0IjoxNjkxMTgxODQ3LCJleHAiOjE2OTExODU0NDd9.218CLyFFMpVxEhGqTBU_4h2uNtqRRjh9utxS6Vk8HJU
-Content-Type: application/json
-
-{
-    "name": "idk"
-}
