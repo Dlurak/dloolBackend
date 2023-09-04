@@ -125,7 +125,16 @@ router.get('/', pagination, async (req, res) => {
 
     const { page, pageSize } = res.locals.pagination;
 
-    const homework = await getPaginatedData(homeworkCollection, page, pageSize);
+    const homework = await getPaginatedData(
+        homeworkCollection,
+        page,
+        pageSize,
+        undefined,
+        undefined,
+        {
+            class: classObj._id,
+        },
+    );
 
     res.status(200).json({
         status: 'success',
