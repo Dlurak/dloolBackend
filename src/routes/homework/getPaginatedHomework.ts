@@ -142,7 +142,9 @@ router.get('/', pagination, async (req, res) => {
         data: {
             homework,
             totalPageCount: Math.ceil(
-                (await homeworkCollection.countDocuments()) / pageSize,
+                (await homeworkCollection.countDocuments({
+                    class: classObj._id,
+                })) / pageSize,
             ),
         },
     });
