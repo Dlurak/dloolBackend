@@ -15,8 +15,6 @@ const router = express.Router();
  *
  * @apiQuery {String} :class The name of the class
  * @apiQuery {String} :school The name of the school
- * @apiQuery {Number} :page The page number
- * @apiQuery {Number} :pageSize The amount of items per page
  *
  * @apiExample {curl} Example usage - curl:
  *    curl http://localhost:3000/homework?class=1a&school=Hogwarts&page=1&pageSize=10

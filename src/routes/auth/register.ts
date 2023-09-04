@@ -11,6 +11,16 @@ import { AddToClassRequest } from '../../database/requests/addToClassRequests';
 
 const router = express.Router();
 
+const delayMiddleware = (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+) => {
+    setTimeout(() => {
+        next();
+    }, 5 * 1000);
+};
+
 /**
  * @api {post} /auth/register Register a new user
  * @apiName Register
@@ -88,7 +98,7 @@ const router = express.Router();
  *     "error": "Internal server error"
  *  }
  */
-router.post('/', async (req, res) => {
+router.post('/', delayMiddleware, async (req, res) => {
     const body = req.body;
 
     const requiredFields: {

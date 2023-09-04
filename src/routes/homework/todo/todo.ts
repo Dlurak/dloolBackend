@@ -12,12 +12,12 @@ const router = express.Router();
  * @apiName GetHomeworkTodo
  * @apiGroup Homework
  * @apiDescription Get a todo list with all homework for a school in todo.txt format. IT IS NOT JSON!!!
- * 
+ *
  * @apiParam {String} school The unique name of the school to get the todo list for
  * @apiQuery {String[]} classes A comma separated list of classes to get the todo list for
- * 
+ *
  * @apiSuccess (200) {String} text The todo list, in text/plain format <b>NOTE THAT THIS IS NOT JSON!!!</b>
- * 
+ *
  * @apiError (404) {String} status The status of the response
  * @apiError (404) {String} message The error message
  *
