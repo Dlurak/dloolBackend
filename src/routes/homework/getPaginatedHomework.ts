@@ -135,8 +135,6 @@ router.get('/', pagination, async (req, res) => {
         },
     );
 
-    console.log(homework);
-
     res.status(200).json({
         status: 'success',
         message: 'Homework found',

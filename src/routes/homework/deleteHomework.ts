@@ -43,8 +43,6 @@ router.delete('/:id', authenticate, async (req, res) => {
 
     const deletedHomework = await deleteHomework(new ObjectId(id));
 
-    console.log(deletedHomework);
-
     if (!deletedHomework) {
         return res.status(404).json({
             status: 'error',
