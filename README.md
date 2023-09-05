@@ -19,28 +19,6 @@ Here are some problems they have and how Dlool solves them:
 
 ---
 
-## Todo
-
-These are only features, bugs and refactorings that I want to do until the first release.
-
--   [x] Registering
--   [x] Login
--   [x] A way to create a School
--   [x] A way to create a Class
--   [x] A way to add homework
--   [x] An API endpoint to get homework
-
-These are things that I want to add but are not necessary for the first release.
-
--   [x] An API endpoint to get a list of all schools
--   [x] An API endpoint to get a list of all classes
--   [ ] Moderation _Currently working on it, on the branch `moderation`_
--   [x] Change user data
--   [ ] Block Bots
--   [x] Delete homework
--   [x] Modify homework
--   [x] Support for multiple output formats like json, csv, iCal, todo.txt (_partilly implemented for ical and todo.txt is planned for the frontend_)
-
 ## Installation
 
 1. Clone this repository
