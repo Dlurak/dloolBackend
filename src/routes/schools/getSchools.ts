@@ -96,8 +96,7 @@ router.get('/', pagination, async (req, res) => {
                 schoolsCollection,
                 page,
                 pageSize,
-                '_id',
-                1,
+                { _id: 1 },
                 searchFilter || {},
             ),
             totalPageCount: Math.ceil(

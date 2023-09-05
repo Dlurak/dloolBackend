@@ -129,12 +129,13 @@ router.get('/', pagination, async (req, res) => {
         homeworkCollection,
         page,
         pageSize,
-        undefined,
-        undefined,
+        { 'from.year': -1, 'from.month': -1, 'from.day': -1 },
         {
             class: classObj._id,
         },
     );
+
+    console.log(homework);
 
     res.status(200).json({
         status: 'success',

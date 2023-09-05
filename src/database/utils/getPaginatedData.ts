@@ -1,4 +1,4 @@
-import { Collection, SortDirection } from 'mongodb';
+import { Collection, Sort, SortDirection } from 'mongodb';
 
 /**
  * A function to get paginated data from a collection
@@ -14,8 +14,7 @@ export function getPaginatedData(
     collection: Collection<any>,
     pageNumber: number,
     pageSize: number,
-    sortKey?: string,
-    sortOrder?: SortDirection,
+    sort?: Sort,
     filter?: any,
 ) {
     if (pageNumber < 1) throw new Error('Page number must be greater than 0');
@@ -23,16 +22,9 @@ export function getPaginatedData(
 
     const skip = (pageNumber - 1) * pageSize;
 
-    if (!sortKey) {
-        sortKey = '_id';
-    }
-    if (!sortOrder) {
-        sortOrder = 1;
-    }
-
     return collection
         .find(filter || {})
-        .sort({ [sortKey]: sortOrder })
+        .sort(sort || { _id: 1 })
         .skip(skip)
         .limit(pageSize)
         .toArray();
