@@ -1,4 +1,4 @@
-import { Collection, Sort, SortDirection } from 'mongodb';
+import { Collection, Sort, Document } from 'mongodb';
 
 /**
  * A function to get paginated data from a collection
@@ -10,8 +10,8 @@ import { Collection, Sort, SortDirection } from 'mongodb';
  * @param filter The optional filter to apply to the query
  * @returns A list of items from the collection
  */
-export function getPaginatedData(
-    collection: Collection<any>,
+export function getPaginatedData<T extends Document>(
+    collection: Collection<T>,
     pageNumber: number,
     pageSize: number,
     sort?: Sort,
@@ -23,9 +23,19 @@ export function getPaginatedData(
     const skip = (pageNumber - 1) * pageSize;
 
     return collection
-        .find(filter || {})
+        .find<T>(filter || {})
         .sort(sort || { _id: 1 })
         .skip(skip)
         .limit(pageSize)
         .toArray();
+}
+
+export function getPaginationPageCount<DocType extends Document>(
+    collection: Collection<DocType>,
+    pageSize: number,
+    filter?: any,
+) {
+    return collection.countDocuments(filter || {}).then((count) => {
+        return Math.ceil(count / pageSize);
+    });
 }

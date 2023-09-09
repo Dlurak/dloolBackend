@@ -18,5 +18,5 @@ export interface Note {
     };
 
     visibility: Visibility;
-    class?: ObjectId;
+    class?: ObjectId | null;
 }
