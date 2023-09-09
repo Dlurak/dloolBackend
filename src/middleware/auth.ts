@@ -31,7 +31,41 @@ const authenticate = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+/**
+ * A middleware that optionally authenticates a user using JWT
+ * The JWT payload is stored in <code>res.locals.jwtPayload</code>
+ * The authentication status is stored in the boolean <code>res.locals.authenticated</code>
+ */
+const authenticateOptional = (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        res.locals.authenticated = false;
+        next();
+        return;
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
+        if (err) {
+            res.locals.authenticated = false;
+            next();
+            return;
+        }
+
+        res.locals.jwtPayload = decoded;
+        res.locals.authenticated = true;
+        next();
+    });
+};
+
 export default authenticate;
+export { authenticateOptional };
 
 /**
  * @apiDefine jwtAuth User A route that requires authentication using JWT
@@ -58,4 +92,10 @@ export default authenticate;
  *    }
  *
  * @apiPermission User
+ */
+
+/**
+ * @apiDefine jwtAuthOptional User A route that optionally requires authentication using JWT
+ *
+ * @apiHeader {String} [authehorization] A JSON-Web-Token, prefixed with <code>Bearer</code>
  */
