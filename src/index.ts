@@ -6,6 +6,7 @@ import userRouter from './routes/auth/router';
 import schoolRouter from './routes/schools/router';
 import classRouter from './routes/classes/router';
 import homeworkRouter from './routes/homework/router';
+import notesRouter from './routes/notes/router';
 
 dotenv.config({ path: '.env.public' });
 
@@ -41,3 +42,4 @@ app.use('/auth', userRouter);
 app.use('/schools?', schoolRouter);
 app.use('/class(es)?', classRouter);
 app.use('/homework', homeworkRouter);
+app.use('/notes?', notesRouter);

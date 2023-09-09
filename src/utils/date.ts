@@ -1,6 +1,7 @@
 import { Date } from '../types/date';
 
 export function isDateValid(date: Date): boolean {
+    if (!date) return false;
     const { year, month, day } = date;
 
     if (

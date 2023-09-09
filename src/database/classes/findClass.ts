@@ -22,4 +22,10 @@ function getUniqueClassById(id: ObjectId) {
     });
 }
 
-export { findClass, getClassesFromSchool, getUniqueClassById };
+function doesClassExist(id: ObjectId) {
+    return classesCollection.findOne({ _id: id }).then((class_) => {
+        return class_ !== null;
+    });
+}
+
+export { findClass, getClassesFromSchool, getUniqueClassById, doesClassExist };
