@@ -2,9 +2,10 @@ import express from 'express';
 import authenticate from '../../middleware/auth';
 import { isDateValid, sortDate } from '../../utils/date';
 import findUsername from '../../database/user/findUser';
-import { doesClassExist } from '../../database/classes/findClass';
+import { getUniqueClassById } from '../../database/classes/findClass';
 import { Note } from '../../database/notes/notes';
 import { createNote } from '../../database/notes/createNote';
+import { ObjectId } from 'mongodb';
 
 const router = express.Router();
 
@@ -90,13 +91,17 @@ router.post('/', authenticate, async (req, res) => {
     }
     const userId = userObj._id;
 
-    const classId = body.class;
-    const classExists = await doesClassExist(classId);
-    if (!classExists && classId !== undefined) {
-        return res.status(404).json({
-            status: 'error',
-            message: 'Invalid class',
-        });
+    const classId = body.class as string | undefined;
+    const isClassValid = !!classId && ObjectId.isValid(classId);
+    if (isClassValid) {
+        const classObjId = new ObjectId(classId);
+        const classes = await getUniqueClassById(classObjId);
+        if (!classes) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Invalid class',
+            });
+        }
     }
 
     const note: Note = {
@@ -107,7 +112,7 @@ router.post('/', authenticate, async (req, res) => {
         content: body.content,
         due: sortDate(body.due),
         visibility: body.visibility || 'public',
-        class: body.class,
+        class: isClassValid ? body.class : null,
     };
 
     const newNote = await createNote(note);
