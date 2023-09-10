@@ -106,7 +106,7 @@ router.post('/', authenticate, async (req, res) => {
         title: body.title,
         content: body.content,
         due: sortDate(body.due),
-        visibility: body.visibility,
+        visibility: body.visibility || 'public',
         class: body.class,
     };
 
