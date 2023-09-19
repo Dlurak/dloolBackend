@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { SchoolWithId } from '../school/school';
 import { classesCollection } from './class';
+import { findUniqueSchool } from '../school/findSchool';
 
 function findClass(school: SchoolWithId, className: string) {
     const schoolId = school._id;
@@ -22,4 +23,22 @@ function getUniqueClassById(id: ObjectId) {
     });
 }
 
-export { findClass, getClassesFromSchool, getUniqueClassById };
+async function findClassBySchoolNameAndClassName(
+    schoolName: string,
+    className: string,
+) {
+    const schoolObj = await findUniqueSchool(schoolName);
+    if (!schoolObj) {
+        return null;
+    }
+
+    const schoolId = schoolObj._id;
+    return classesCollection.findOne({ name: className, school: schoolId });
+}
+
+export {
+    findClass,
+    getClassesFromSchool,
+    getUniqueClassById,
+    findClassBySchoolNameAndClassName,
+};

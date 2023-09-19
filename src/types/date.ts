@@ -3,3 +3,10 @@ export interface Date {
     month: number;
     day: number;
 }
+
+export interface Time {
+    hour: number;
+    minute: number;
+}
+
+export interface DateTime extends Date, Time {}
