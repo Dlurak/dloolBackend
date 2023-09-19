@@ -53,6 +53,41 @@ const validate = async (
     return [true, classObj];
 };
 
+/**
+ * @api {post} /events Create an event
+ * @apiName CreateEvent
+ * @apiGroup Events
+ * @apiDescription Create an event
+ *
+ * @apiBody {String} title Title of the event
+ * @apiBody {String} description Description of the event
+ * @apiBody {Object} date Date of the event
+ * @apiBody {Number} date.year Year of the event
+ * @apiBody {Number{1-12}} date.month Month of the event
+ * @apiBody {Number{1-31}} date.day Day of the event
+ * @apiBody {Number{0-23}} date.hour Hour of the event
+ * @apiBody {Number{0-59}} date.minute Minute of the event
+ * @apiBody {Number{0..}} duration Duration of the event
+ * @apiBody {String} subject Subject of the event
+ * @apiBody {String} school School of the event
+ * @apiBody {String} class Class of the event
+ *
+ * @apiError (400) {String="error"} status Status of the response
+ * @apiError (400) {String="title is not a string" "description is not a string" "date is not a object" "duraton is not a number" "subject is not a string" "school is not a string" "class is not a string" "date is invalid" "duration must not be negative"} message Error message
+ *
+ * @apiError (404) {String="error"} status Status of the response
+ * @apiError (404) {String="class does not exist"} message Error message
+ *
+ * @apiError (500) {String="error"} status Status of the response
+ * @apiError (500) {String="internal server error" "user does not exist"} message Error message
+ *
+ * @apiSuccess (201) {String="success"} status Status of the response
+ * @apiSuccess (201) {String="event created"} message Success message
+ * @apiSuccess (201) {Object} data Data of the response
+ * @apiSuccess (201) {String} data.id ID of the created event
+ *
+ * @apiUse jwtAuth
+ */
 router.post('/', authenticate, async (req, res) => {
     const body = req.body;
     const username = res.locals.jwtPayload.username as string;
