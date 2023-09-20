@@ -67,10 +67,11 @@ const validate = async (
  * @apiBody {Number{1-31}} date.day Day of the event
  * @apiBody {Number{0-23}} date.hour Hour of the event
  * @apiBody {Number{0-59}} date.minute Minute of the event
- * @apiBody {Number{0..}} duration Duration of the event
+ * @apiBody {Number{0..}} duration Duration of the event in seconds
  * @apiBody {String} subject Subject of the event
  * @apiBody {String} school School of the event
  * @apiBody {String} class Class of the event
+ * @apiBody {String} [location] Location of the event
  *
  * @apiError (400) {String="error"} status Status of the response
  * @apiError (400) {String="title is not a string" "description is not a string" "date is not a object" "duraton is not a number" "subject is not a string" "school is not a string" "class is not a string" "date is invalid" "duration must not be negative"} message Error message
@@ -114,6 +115,8 @@ router.post('/', authenticate, async (req, res) => {
 
     const editors = [userObj._id];
     const classId = classObj._id;
+    const bodyLocation = body.location;
+    const location = bodyLocation ? bodyLocation + '' : null;
 
     const event: CalEvent = {
         title: body.title as string,
@@ -122,6 +125,7 @@ router.post('/', authenticate, async (req, res) => {
         duration: body.duration as number,
         subject: body.subject as string,
         editors,
+        location,
         editedAd: [new Date().getTime()],
         class: classId,
     };

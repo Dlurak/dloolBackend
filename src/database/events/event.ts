@@ -11,7 +11,7 @@ export interface CalEvent {
     date: DateTime;
 
     duration: number;
-    location?: string;
+    location: string | null;
     subject: string;
 
     editors: ObjectId[];
