@@ -1,10 +1,12 @@
 import expess from 'express';
 
 import createEventRouter from './createEvent';
+import getEventsRouter from './getEvents';
 
 const router = expess.Router();
 
 router.use('/', createEventRouter);
+router.use('/', getEventsRouter);
 router.all('/', (req, res) => {
     res.status(405).json({
         status: 'error',
