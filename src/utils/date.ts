@@ -72,3 +72,9 @@ export function sortDateTime(dateTime: DateTime) {
         minute,
     };
 }
+
+export const dateTimeToDate = (dateTime: DateTime) => {
+    const { year, month, day, hour, minute } = dateTime;
+
+    return new Date(year, month - 1, day, hour, minute);
+};

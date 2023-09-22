@@ -1,11 +1,9 @@
 import express from 'express';
-import { jsonAccepter } from '../../middleware/isFormat';
 
 import getAsJsonRouter from './get/json';
+import getAsIcalRouter from './get/ical';
 
 const router = express.Router();
-
-router.use('/', jsonAccepter, getAsJsonRouter);
 
 /**
  * @api {get} /events Get events
@@ -18,7 +16,7 @@ router.use('/', jsonAccepter, getAsJsonRouter);
  * @apiQuery {String} [school] Filter events by school. If not both school and class are provided, all events will be returned.
  * @apiQuery {String} [class] Filter events by class. If not both school and class are provided, all events will be returned.
  *
- * @apiHeader {String} [Accept=application/json] The requested format. Currently only JSON is supported. I plan to support iCal very very soon and maybe RSS, CSV and XML in the future.
+ * @apiHeader {String="application/json" "text/calendar"} [Accept="application/json"] The requested format. Currently only JSON is supported. I plan to support iCal very very soon and maybe RSS, CSV and XML in the future.
  *    Please note that the only documented format is JSON. If you use any other format, it will work but it wont be documented. All of the errors will be in JSON format.
  *    If you have an idea how to document other formats, please open an issue on the backend repo on GitHub. ;)
  *
@@ -45,12 +43,21 @@ router.use('/', jsonAccepter, getAsJsonRouter);
  * @apiSuccess (200) {String[]} data.events.editors The usernames of the editors of the event
  * @apiSuccess (200) {String[]} data.events.editedAt The timestamps of the edits of the event
  *
+ * @apiError (406) {String="error"} status The status of the request
+ * @apiError (406) {String="Unsupported Accept header"} message The error message
+ *
  * @apiUse pagination
  */
 router.get('/', (req, res) => {
-    res.status(406).json({
-        status: 'error',
-        message: 'Unsupported Accept header',
+    res.format({
+        'application/json': getAsJsonRouter,
+        'text/calendar': getAsIcalRouter,
+        default: () => {
+            res.status(406).json({
+                status: 'error',
+                message: 'Unsupported Accept header',
+            });
+        },
     });
 });
 

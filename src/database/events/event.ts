@@ -15,7 +15,7 @@ export interface CalEvent {
     subject: string;
 
     editors: ObjectId[];
-    editedAd: number[];
+    editedAt: number[];
 
     class: ObjectId;
 }

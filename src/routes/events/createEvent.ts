@@ -126,7 +126,7 @@ router.post('/', authenticate, async (req, res) => {
         subject: body.subject as string,
         editors,
         location,
-        editedAd: [new Date().getTime()],
+        editedAt: [new Date().getTime()],
         class: classId,
     };
 

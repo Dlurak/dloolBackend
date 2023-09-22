@@ -5,7 +5,9 @@ export const jsonAccepter = (
     res: Response,
     next: NextFunction,
 ) => {
-    return req.accepts('application/json') ? next() : next('route');
+    console.log('JSON');
+
+    return !!req.accepts('application/json') ? next() : next('route');
 };
 
 export const htmlAccepter = (
@@ -13,7 +15,7 @@ export const htmlAccepter = (
     res: Response,
     next: NextFunction,
 ) => {
-    return req.accepts('text/html') ? next() : next('route');
+    return !!req.accepts('text/html') ? next() : next('route');
 };
 
 export const icalAccepter = (
@@ -21,5 +23,7 @@ export const icalAccepter = (
     res: Response,
     next: NextFunction,
 ) => {
-    return req.accepts('text/calendar') ? next() : next('route');
+    console.log('ICAL');
+
+    return !!req.accepts('text/calendar') ? next() : null;
 };
