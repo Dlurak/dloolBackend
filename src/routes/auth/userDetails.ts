@@ -11,6 +11,7 @@ const router = express.Router();
 /**
  * @api {get} /auth/user/:id Get user details
  * @apiName GetUserDetails
+ * @apiDescription Get the details of a user. The user will be identified by the MongoDB ID.
  * @apiGroup Auth
  *
  * @apiParam {String} id The MongoDB ID of the user
