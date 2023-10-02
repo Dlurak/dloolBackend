@@ -4,11 +4,30 @@ import { eventsCollection } from '../../../database/events/event';
 import ical, { ICalCategory } from 'ical-generator';
 import { dateTimeToDate } from '../../../utils/date';
 
+const generateTimezoneString = (timezoneOffsetMin: number): string => {
+    const timezoneOffsetHours = timezoneOffsetMin / 60;
+
+    const offsetIsPositive = timezoneOffsetHours > 0;
+    const prefix = offsetIsPositive ? '+' : '-';
+    const offsetHours = Math.floor(Math.abs(timezoneOffsetHours));
+
+    return `Etc/GMT${prefix}${offsetHours}`;
+};
+
 const router = express.Router();
 
 router.get('/', async (req, res) => {
     const schoolName = req.query.school as string;
     const className = req.query.class as string;
+
+    const ifModifiedSince = req.headers['if-modified-since'];
+    const ifModifiedSinceExists = ifModifiedSince !== undefined;
+
+    const ifModifiedDate = new Date(
+        ifModifiedSinceExists ? ifModifiedSince : 0,
+    );
+    const timezoneOffsetMin = ifModifiedDate.getTimezoneOffset();
+    const timezoneString = generateTimezoneString(timezoneOffsetMin);
 
     let filter = {};
 
@@ -32,6 +51,7 @@ router.get('/', async (req, res) => {
 
     const cal = ical({
         name: 'Dlool - Events',
+        timezone: timezoneString,
     });
 
     data.forEach((event) => {
