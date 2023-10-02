@@ -1,3 +1,4 @@
+import { classesCollection } from '../classes/class';
 import { usersCollection } from './user';
 
 /**
@@ -11,6 +12,31 @@ async function doesUsernameExist(username: string): Promise<boolean> {
     });
 
     return exists;
+}
+
+export async function isUserMemberOfClass(
+    username: string,
+    className: string,
+): Promise<boolean> {
+    const userIdPromise = usersCollection.findOne({ username }).then((user) => {
+        return user?._id;
+    });
+    const classMembersPromise = classesCollection
+        .findOne({ name: className })
+        .then((classObj) => {
+            return classObj?.members;
+        });
+
+    const userId = await userIdPromise;
+    const classMembers = await classMembersPromise;
+
+    if (!userId || !classMembers) {
+        return false;
+    }
+
+    const classmemberStrings = classMembers.map((member) => member.toString());
+    const userIsMember = classmemberStrings.includes(userId.toString());
+    return userIsMember;
 }
 
 export default doesUsernameExist;

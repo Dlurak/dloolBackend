@@ -7,6 +7,7 @@ import { Class } from '../../database/classes/class';
 import findUsername from '../../database/user/findUser';
 import { CalEvent } from '../../database/events/event';
 import { createEvent } from '../../database/events/createEvent';
+import { isUserMemberOfClass } from '../../database/user/doesUserExist';
 
 const router = express.Router();
 
@@ -76,6 +77,9 @@ const validate = async (
  * @apiError (400) {String="error"} status Status of the response
  * @apiError (400) {String="title is not a string" "description is not a string" "date is not a object" "duraton is not a number" "subject is not a string" "school is not a string" "class is not a string" "date is invalid" "duration must not be negative"} message Error message
  *
+ * @apiError (403) {String="error"} status Status of the response
+ * @apiError (403) {String="user is not a member of the class"} message Error message
+ *
  * @apiError (404) {String="error"} status Status of the response
  * @apiError (404) {String="class does not exist"} message Error message
  *
@@ -107,6 +111,17 @@ router.post('/', authenticate, async (req, res) => {
         res.status(500).json({
             status: 'error',
             message: 'user does not exist',
+        });
+        return;
+    }
+    const userIsMember = await isUserMemberOfClass(
+        username,
+        body.class as string,
+    );
+    if (!userIsMember) {
+        res.status(403).json({
+            status: 'error',
+            message: 'user is not a member of the class',
         });
         return;
     }
