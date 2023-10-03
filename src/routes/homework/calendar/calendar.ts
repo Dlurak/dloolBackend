@@ -7,7 +7,10 @@ import {
 import ical, { ICalEventTransparency } from 'ical-generator';
 import { findUniqueSchool } from '../../../database/school/findSchool';
 import { classesCollection } from '../../../database/classes/class';
-import { ObjectId } from 'mongodb';
+import { ObjectId, Sort } from 'mongodb';
+import { getUniqueClassById } from '../../../database/classes/findClass';
+import { homeworkCollection } from '../../../database/homework/homework';
+import { getFrontendUrlForHomework } from '../../../database/homework/getFrontendUrlForHomework';
 
 const router = express.Router();
 
@@ -79,20 +82,34 @@ router.get('/calendar/:school', async (req, res) => {
         name: 'Homework',
     });
 
+    const homeworkIds = homework.map((hw) => hw._id);
+    const frontendUrlsPromises = homeworkIds.map((id) =>
+        getFrontendUrlForHomework(id),
+    );
+    const frontendUrls = await Promise.all(frontendUrlsPromises);
+
+    let i = 0;
     homework.forEach((hw) => {
+        const url = frontendUrls[i];
+        i++;
         hw.assignments.forEach((assignment) => {
             const dueDate = new Date(
                 assignment.due.year,
                 assignment.due.month - 1,
                 assignment.due.day,
             );
+
+            const description = `${assignment.description}\n\nDlool - Your colloborative homework manager`;
+
             cal.createEvent({
                 start: dueDate,
                 end: dueDate,
                 allDay: true,
 
                 summary: assignment.subject,
-                description: assignment.description,
+                description: description,
+
+                url: url,
 
                 transparency: ICalEventTransparency.TRANSPARENT,
             });

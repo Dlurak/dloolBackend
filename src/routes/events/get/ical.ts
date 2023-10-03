@@ -57,12 +57,13 @@ router.get('/', async (req, res) => {
     data.forEach((event) => {
         const startDate = dateTimeToDate(event.date);
         const endDate = new Date(startDate.getTime() + event.duration * 1000);
+        const description = `${event.description}\n\nDlool - Your colloborative homework manager`;
 
         cal.createEvent({
             start: startDate,
             end: endDate,
-            summary: event.title,
-            description: event.description,
+            summary: `${event.subject} - ${event.title}`,
+            description: description,
             location: event.location,
             allDay: false,
             categories: [new ICalCategory({ name: event.subject })],
