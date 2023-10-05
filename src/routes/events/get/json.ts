@@ -53,9 +53,7 @@ router.get('/', pagination, async (req, res) => {
         const { schoolName, className } = schoolAndClassData;
 
         const editorObjs = await Promise.all(event.editors.map(findUserById));
-        const editors = editorObjs.map(
-            (editor) => (editor as UserWithId).username,
-        );
+        const editors = editorObjs.map((editor) => (editor as UserWithId).name);
 
         return {
             ...event,
