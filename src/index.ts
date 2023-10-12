@@ -32,10 +32,26 @@ app.listen(port, '0.0.0.0', () => {
     console.log(`Server is running on port ${process.env.PORT}`);
 });
 
+/**
+ * @api {get} / Get API info
+ * @apiName GetAPIInfo
+ * @apiGroup General
+ * @apiDescription This endpoint is used to get information about the API, the TS-SDK uses this endpoint to check that the url is a Dlool API.
+ *
+ * @apiSuccess (200) {String} name Name of the API, when you want to deploy a own instance this is where you can name your deployment.
+ * @apiSuccess (200) {Boolean} isDlool This value will always be true, it's just a way to check that you are using a Dlool API.
+ *
+ * @apiSuccessExample {json} Official Response:
+ *    HTTP/1.1 200 Success
+ *    {
+ *       "name": "Dlool",
+ *      "isDlool": true
+ *    }
+ */
 app.all('/', (req, res) => {
-    res.status(400).json({
-        status: 'error',
-        message: "This route isn't defined",
+    res.status(200).json({
+        name: 'Dlool',
+        isDlool: true,
     });
 });
 
