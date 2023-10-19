@@ -4,10 +4,7 @@ import {
     findClassBySchoolNameAndClassName,
     getClassAndSchoolNameById,
 } from '../../../database/classes/findClass';
-import {
-    getPaginatedData,
-    getPaginationPageCount,
-} from '../../../database/utils/getPaginatedData';
+import { getPaginationPageCount } from '../../../database/utils/getPaginatedData';
 import { eventsCollection } from '../../../database/events/event';
 import { findUserById } from '../../../database/user/findUser';
 import { UserWithId } from '../../../database/user/user';
@@ -36,13 +33,65 @@ router.get('/', pagination, async (req, res) => {
         filter = { class: classObj._id };
     }
 
-    const data = await getPaginatedData(
-        eventsCollection,
-        res.locals.pagination.page as number,
-        res.locals.pagination.pageSize as number,
-        undefined,
-        filter,
-    );
+    const currentDateTime = new Date();
+    const currentTimestamp = currentDateTime.getTime();
+    const currentPage = res.locals.pagination.page as number;
+    const pageSize = res.locals.pagination.pageSize as number;
+
+    const data = await eventsCollection
+        .aggregate([
+            {
+                $match: filter,
+            },
+
+            {
+                $addFields: {
+                    jsDate: {
+                        $dateFromParts: {
+                            year: '$date.year',
+                            month: '$date.month',
+                            day: '$date.day',
+                            hour: '$date.hour',
+                            minute: '$date.minute',
+                        },
+                    },
+                },
+            },
+            {
+                $addFields: {
+                    timestamp: { $toLong: '$jsDate' },
+                },
+            },
+            {
+                $addFields: {
+                    timeDifference: {
+                        $abs: { $subtract: ['$timestamp', currentTimestamp] },
+                    },
+                },
+            },
+            {
+                $sort: {
+                    timeDifference: 1,
+                },
+            },
+
+            // remove the new fields
+            {
+                $project: {
+                    jsDate: 0,
+                    timestamp: 0,
+                    timeDifference: 0,
+                },
+            },
+
+            {
+                $skip: (currentPage - 1) * pageSize,
+            },
+            {
+                $limit: pageSize,
+            },
+        ])
+        .toArray();
 
     const mappedDataPromises = data.map(async (event) => {
         const classId = event.class;
@@ -66,7 +115,7 @@ router.get('/', pagination, async (req, res) => {
     const mappedData = await Promise.all(mappedDataPromises);
     const pageCount = await getPaginationPageCount(
         eventsCollection,
-        res.locals.pagination.pageSize as number,
+        pageSize,
         filter,
     );
 
