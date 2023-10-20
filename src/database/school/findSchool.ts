@@ -6,9 +6,10 @@ import { SchoolWithId, schoolsCollection } from './school';
  * @param uniqueName The unique name of the school to find
  * @returns Either the school with the given unique name or null if no school was found
  */
-function findUniqueSchool(uniqueName: string) {
+function findUniqueSchool<T extends boolean = false>(uniqueName: string) {
+    type Return = T extends true ? SchoolWithId : SchoolWithId | null;
     return schoolsCollection.findOne({ uniqueName }).then((school) => {
-        return school as SchoolWithId | null;
+        return school as Return;
     });
 }
 

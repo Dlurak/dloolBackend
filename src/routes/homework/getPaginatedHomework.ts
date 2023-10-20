@@ -4,6 +4,7 @@ import express from 'express';
 import { getPaginatedData } from '../../database/utils/getPaginatedData';
 import { homeworkCollection } from '../../database/homework/homework';
 import pagination from '../../middleware/pagination';
+import { z } from 'zod';
 
 const router = express.Router();
 
@@ -89,36 +90,42 @@ const router = express.Router();
  * @apiUse pagination
  */
 router.get('/', pagination, async (req, res) => {
-    const requiredQueryParams = ['class', 'school'];
+    const schoolError = 'Missing query parameter school';
+    const classError = 'Missing query parameter class';
 
-    for (const param of requiredQueryParams) {
-        if (!req.query[param]) {
-            res.status(400).json({
-                status: 'error',
-                error: `Missing query parameter ${param}`,
-            });
-            return;
-        }
-    }
+    const schema = z.object({
+        class: z
+            .string({ required_error: classError })
+            .min(1, { message: classError }),
+        school: z
+            .string({ required_error: schoolError })
+            .min(1, { message: schoolError })
+            .refine(
+                async (sch) => await findUniqueSchool(sch),
+                (sch) => ({ message: `The school ${sch} does not exist` }),
+            ),
+    });
 
-    const className = req.query.class;
-    const schoolName = req.query.school;
+    const result = await schema.safeParseAsync(req.query);
 
-    const school = await findUniqueSchool(schoolName as string);
-    if (!school) {
+    if (!result.success) {
         res.status(400).json({
             status: 'error',
-            error: `The school ${schoolName} does not exist`,
+            message: result.error.issues[0].message,
         });
         return;
     }
 
-    const classObj = await findClass(school, className as string);
+    const className = result.data.class;
+    const schoolName = result.data.school;
+
+    const school = await findUniqueSchool<true>(schoolName);
+    const classObj = await findClass(school, className);
 
     if (!classObj) {
         res.status(400).json({
             status: 'error',
-            error: `The class ${className} does not exist in the school ${schoolName}`,
+            message: `The class ${className} does not exist in the school ${schoolName}`,
         });
         return;
     }

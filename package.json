@@ -36,7 +36,8 @@
     "ical-generator": "^5.0.0",
     "jsonwebtoken": "^9.0.1",
     "mongodb": "^5.8.0",
-    "todo.txt": "^0.0.2"
+    "todo.txt": "^0.0.2",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
