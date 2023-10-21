@@ -2,6 +2,7 @@ import express from 'express';
 
 import getAsJsonRouter from './get/json';
 import getAsIcalRouter from './get/ical';
+import getAsCsvRouter from './get/csv';
 
 const router = express.Router();
 
@@ -52,6 +53,9 @@ router.get('/', (req, res) => {
     res.format({
         'application/json': getAsJsonRouter,
         'text/calendar': getAsIcalRouter,
+        // csv
+        'text/csv': getAsCsvRouter,
+
         default: () => {
             res.status(406).json({
                 status: 'error',
