@@ -1,6 +1,7 @@
 import express from 'express';
 import { getClassesFromSchool } from '../../database/classes/findClass';
 import { findUniqueSchool } from '../../database/school/findSchool';
+import { z } from 'zod';
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const router = express.Router();
  * @apiGroup Classes
  * @apiVersion 1.0.0
  *
- * @apiQuery {String} [:school] The name of the school to get the classes from
+ * @apiQuery {String} :school The name of the school to get the classes from
  *
  * @apiExample {curl} Example usage - curl:
  *   curl http://localhost:3000/classes?school=School
@@ -28,9 +29,17 @@ const router = express.Router();
  *   school := 'School'
  *   resp := http.get('http://localhost:3000/classes?school=${school}')!
  *   println(resp.body)
+ * @apiExample {kotlin} Example usage - kotlin:
+ * val client = OkHttpClient()
+ * val request = Request.Builder()
+ *    .url("http://localhost:3000/classes?school=Hogwarts")
+ *    .get()
+ *    .build()
  *
- * @apiSuccess (200) {String} status The status of the request (success)
- * @apiSuccess (200) {String} message A short message about the status of the request
+ * val response = client.newCall(request).execute()
+ *
+ * @apiSuccess (200) {String=success} status The status of the request (success)
+ * @apiSuccess (200) {String="Class found"} message A short message about the status of the request
  * @apiSuccess (200) {Object[]} data The data returned by the request
  * @apiSuccess (200) {String} data._id The MongoDB ID of the class
  * @apiSuccess (200) {String} data.name The name of the class
@@ -76,19 +85,20 @@ const router = express.Router();
  *    }
  */
 router.get('/', async (req, res) => {
-    // this is written like this so it can be easily extended
-    const requiredParams = ['school'];
-    for (const param of requiredParams) {
-        if (!req.query[param]) {
-            res.status(400).json({
-                status: 'error',
-                error: `Missing required parameter ${param}`,
-            });
-            return;
-        }
-    }
+    const schema = z.object({
+        school: z.string({
+            required_error: 'Missing required parameter school',
+        }),
+    });
+    const zRes = schema.safeParse(req.query);
 
-    const schoolName = req.query.school as string;
+    if (!zRes.success)
+        return res.status(400).json({
+            status: 'error',
+            error: zRes.error.issues[0].message,
+        });
+
+    const schoolName = zRes.data.school;
     const schoolObj = await findUniqueSchool(schoolName);
 
     if (!schoolObj) {
