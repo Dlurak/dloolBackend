@@ -3,6 +3,8 @@ import express from 'express';
 import getAsJsonRouter from './get/json';
 import getAsIcalRouter from './get/ical';
 import getAsCsvRouter from './get/csv';
+import getAsMinifiedXmlRouter from './get/xml/minified';
+import getAsHumanReadableXmlRouter from './get/xml/humanReadable';
 
 const router = express.Router();
 
@@ -53,8 +55,9 @@ router.get('/', (req, res) => {
     res.format({
         'application/json': getAsJsonRouter,
         'text/calendar': getAsIcalRouter,
-        // csv
         'text/csv': getAsCsvRouter,
+        'application/xml': getAsMinifiedXmlRouter,
+        'text/xml': getAsHumanReadableXmlRouter,
 
         default: () => {
             res.status(406).json({
