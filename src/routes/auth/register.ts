@@ -38,6 +38,8 @@ const router = express.Router();
  * @apiBody {String} school The unique name of the school the user is in
  * @apiBody {String} class The name of the class the user is in
  *
+ * @apiBody {String} [email] The email of the user
+ *
  *
  * @apiSuccess (201) {String} status Status of the request (success).
  * @apiSuccess (201) {String} message Message of the request (User created).
@@ -60,30 +62,35 @@ const router = express.Router();
  *        }
  *    }
  *
- * @apiExample {curl} Curl example:
- *   curl -X POST -H "Content-Type: application/json" -d '{"username": "username", "name": "name", "password": "password", "school": "school", "class": "class"}' http://localhost:3000/auth/register
- *
- *
  * @apiExample {javascript} JavaScript example:
- *    const data = {
- *       "username": "username",
- *       "name": "name",
- *       "password": "password",
- *       "school": "school",
- *       "class": "class",
- *    };
- *    const response = await fetch('http://localhost:3000/auth/register', {
- *       method: 'POST',
- *       body: JSON.stringify(data),
- *       headers: {
- *          'Content-Type': 'application/json'
- *       }
- *    };
+ *    let headersList = {
+ *     "Content-Type": "application/json"
+ *    }
+ *
+ *    let bodyContent = JSON.stringify({
+ *      "username": "HappyNoName",
+ *      "name": "NoName",
+ *      "password": "lowercaseandUPPERCASEand1numberand8charsLong!",
+ *      "school": "Hogwarts",
+ *      "class": "1a",
+ *
+ *      "email": "noreply@noreply.com"
+ *    });
+ *
+ *    let response = await fetch("http://localhost:3000/auth/register", {
+ *      method: "POST",
+ *      body: bodyContent,
+ *      headers: headersList
+ *    });
+ *
+ *    let data = await response.json();
+ *    console.log(data);
  *
  * @apiPermission none
  *
  * @apiError (400) {String} status Status of the request (error).
- * @apiError (400) {String} error Error message.
+ * @apiError (400) {String} message Error message.
+ * @apiError (400) {Object} [errors] Errors of the request.
  *
  * @apiErrorExample {json} 400:
  *   HTTP/1.1 400 Bad Request

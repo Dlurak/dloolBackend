@@ -19,6 +19,7 @@ const router = express.Router();
  * @apiSuccess (200) {String} data.id The MongoDB id of the user
  * @apiSuccess (200) {String} data.username The unique username of the user
  * @apiSuccess (200) {String} data.name The show name of the user
+ * @apiSuccess (200) {String|Null} data.email The email of the user
  * @apiSuccess (200) {Object} data.school The school the user is in
  * @apiSuccess (200) {String} data.school._id The MongoDB id of the school
  * @apiSuccess (200) {String} data.school.name The name of the school
@@ -49,6 +50,7 @@ const router = express.Router();
  *        "id": "64bfc7ae8e3c2ae28caf9662",
  *        "username": "dlurak",
  *        "name": "Dlurak",
+ *        "email": null,
  *        "school": {
  *        },
  *        "classes": [
