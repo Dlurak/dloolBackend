@@ -18,6 +18,8 @@ export async function acceptRequest(id: ObjectId, processedBy: ObjectId) {
             password: request.userDetails.password,
             school: request.userDetails.school,
             classes: [request.classId],
+
+            email: request.userDetails.email,
         },
         true,
     );

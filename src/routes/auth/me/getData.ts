@@ -97,6 +97,7 @@ router.get('/', authenticate, async (req, res) => {
         id: rawData._id,
         username: rawData.username,
         name: rawData.name,
+        email: rawData.email,
         school,
         classes,
     };

@@ -19,3 +19,10 @@ export function findRequestsByClassId(
 
     return documents;
 }
+
+export const doesRequestExist = (username: string): Promise<boolean> => {
+    const doc = addToClassRequestsCollection.findOne({
+        'userDetails.username': username,
+    });
+    return doc.then((d) => !!d);
+};

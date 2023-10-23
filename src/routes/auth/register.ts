@@ -2,12 +2,26 @@ import express from 'express';
 import { User } from '../../database/user/user';
 import { createUser } from '../../database/user/createUser';
 import doesUsernameExist from '../../database/user/doesUserExist';
-import { findUniqueSchool } from '../../database/school/findSchool';
+import {
+    doesSchoolExist,
+    findUniqueSchool,
+} from '../../database/school/findSchool';
 import { findClass } from '../../database/classes/findClass';
 import findUsername from '../../database/user/findUser';
 import { addMemberToClass } from '../../database/classes/update';
 import { createAddToClassRequest } from '../../database/requests/createAddToClassRequest';
 import { AddToClassRequest } from '../../database/requests/addToClassRequests';
+
+import { z } from 'zod';
+import {
+    hasLowercaseLetter,
+    hasNumber,
+    hasSpecialCharacter,
+    hasUppercaseLetter,
+    specialCharacters,
+} from '../../utils/strings';
+import { SchoolWithId } from '../../database/school/school';
+import { doesRequestExist } from '../../database/requests/findAddToClassRequests';
 
 const router = express.Router();
 
@@ -89,72 +103,117 @@ const router = express.Router();
  *  }
  */
 router.post('/', async (req, res) => {
-    const body = req.body;
+    const genTypeErrorMessage = (key: string, type: string) =>
+        `Expected ${key} to be of type ${type}`;
+    const genMissingErrorMessage = (key: string) =>
+        `Missing ${key} in request body`;
+    const genErrorMessages = (key: string, type: string) => ({
+        invalid_type_error: genTypeErrorMessage(key, type),
+        required_error: genMissingErrorMessage(key),
+    });
+    const genEmptyErrorMessage = (key: string) => ({
+        message: genMissingErrorMessage(key),
+    });
 
-    const requiredFields: {
-        [key: string]: 'string'; // this is written like this so it can be extended
-    } = {
-        username: 'string',
-        name: 'string',
-        password: 'string',
-        school: 'string',
-        class: 'string',
-    };
+    const schema = z.object({
+        username: z
+            .string(genErrorMessages('username', 'string'))
+            .min(1, genEmptyErrorMessage('username'))
+            .refine(
+                async (username) => {
+                    const registeredUsernameExistsPromise =
+                        doesUsernameExist(username);
+                    const signupRequestUsernameExistsPromise =
+                        doesRequestExist(username);
+                    const promiseList = [
+                        registeredUsernameExistsPromise,
+                        signupRequestUsernameExistsPromise,
+                    ];
+                    const existList = await Promise.all(promiseList);
+                    const valid = existList.every((exists) => !exists);
+                    return valid;
+                },
+                (username) => ({
+                    message: `User ${username} already exists`,
+                }),
+            ),
+        name: z
+            .string(genErrorMessages('name', 'string'))
+            .min(1, genEmptyErrorMessage('name')),
+        password: z
+            .string(genErrorMessages('password', 'string'))
+            .min(8, { message: 'Password must be at least 8 characters long' })
+            .refine(hasLowercaseLetter, {
+                message: 'Password must contain at least one lowercase letter',
+            })
+            .refine(hasUppercaseLetter, {
+                message: 'Password must contain at least one uppercase letter',
+            })
+            .refine(hasNumber, {
+                message: 'Password must contain at least one number',
+            })
+            .refine(hasSpecialCharacter, {
+                message: `Password must contain at least one of those characters: ${specialCharacters}`,
+            }),
+        school: z
+            .string(genErrorMessages('school', 'string'))
+            .min(1, genEmptyErrorMessage('school'))
+            .refine(doesSchoolExist, (school) => ({
+                message: `School ${school} does not exist`,
+            })),
+        class: z
+            .string(genErrorMessages('class', 'string'))
+            .min(1, genEmptyErrorMessage('class')),
 
-    for (const entry of Object.entries(requiredFields)) {
-        // check that the body has entry[0] as a key
-        if (!body[entry[0]]) {
-            res.status(400).json({
-                status: 'error',
-                error: `Missing ${entry[0]} in request body`,
-            });
-            return;
-        }
+        email: z
+            .string({
+                invalid_type_error: genTypeErrorMessage('email', 'string'),
+            })
+            .email({ message: 'Invalid email' })
+            .optional(),
+    });
 
-        // check that the types are correct
-        if (typeof body[entry[0]] !== entry[1]) {
-            res.status(400).json({
-                status: 'error',
-                error: `Expected ${entry[0]} to be of type ${entry[1]}`,
-            });
-            return;
-        }
-    }
+    const result = await schema.safeParseAsync(req.body);
 
-    if (await doesUsernameExist(body.username)) {
+    if (!result.success) {
+        const fieldErrors = result.error.flatten().fieldErrors;
+
+        const errors = Object.values(fieldErrors);
+        const flatErrors = errors.reduce((acc, val) => acc.concat(val), []);
+
         res.status(400).json({
             status: 'error',
-            error: `User ${body.username} already exists`,
+            message: flatErrors[0],
+            errors: fieldErrors,
         });
         return;
     }
 
     // body.school is the unique name so we need to find the id
-
-    const school = await findUniqueSchool(body.school as string);
-    if (school === null) {
-        res.status(400).json({
-            status: 'error',
-            error: `School ${body.school} does not exist`,
-        });
-        return;
-    }
+    const school = (await findUniqueSchool(result.data.school)) as SchoolWithId;
     const schoolId = school._id;
-    const classObject = await findClass(school, body.class as string);
+
+    const classObject = await findClass(school, result.data.class);
     if (classObject === null) {
         res.status(400).json({
             status: 'error',
-            error: `Class ${body.class} does not exist`,
+            message: `Class ${result.data.class} does not exist`,
         });
         return;
     }
 
+    const { username, name, password } = result.data;
+    const email = result.data.email ?? null;
+
     const user: User = {
-        username: body.username,
-        name: body.name,
-        password: body.password,
+        username,
+        name,
+        password,
+
         school: schoolId,
         classes: [classObject._id],
+
+        email,
     };
 
     // check if the class already has a user
@@ -163,11 +222,14 @@ router.post('/', async (req, res) => {
         // create a request
         const addToClassRequest: AddToClassRequest = {
             userDetails: {
-                name: body.name,
-                username: body.username,
+                name,
+                username,
                 createdAt: Date.now(),
                 school: schoolId,
-                password: body.password,
+                password,
+
+                email,
+
                 acceptedClasses: [],
             },
             classId: classObject._id,
@@ -176,20 +238,7 @@ router.post('/', async (req, res) => {
             processedBy: null,
         };
 
-        const newRequest = await createAddToClassRequest({
-            userDetails: {
-                name: body.name,
-                username: body.username,
-                createdAt: Date.now(),
-                school: schoolId,
-                password: body.password,
-                acceptedClasses: [],
-            },
-            classId: classObject._id,
-            createdAt: Date.now(),
-            status: 'pending',
-            processedBy: null,
-        });
+        const newRequest = await createAddToClassRequest(addToClassRequest);
 
         if (!newRequest) {
             res.status(500).json({
@@ -209,14 +258,12 @@ router.post('/', async (req, res) => {
     }
 
     if (await createUser(user)) {
-        const newUser = await findUsername(body.username);
-        if (newUser === null) {
-            res.status(500).json({
+        const newUser = await findUsername(username);
+        if (newUser === null)
+            return res.status(500).json({
                 status: 'error',
                 error: 'Internal server error',
             });
-            return;
-        }
 
         const userId = newUser._id;
         addMemberToClass(classObject._id, userId);

@@ -34,4 +34,7 @@ function findSchools(name: string, timezoneOffsetHours: number) {
         });
 }
 
-export { findUniqueSchool, findSchools, findUniqueSchoolById };
+const doesSchoolExist = (uniqueName: string): Promise<boolean> =>
+    schoolsCollection.findOne({ uniqueName }).then((sch) => !!sch);
+
+export { findUniqueSchool, findSchools, findUniqueSchoolById, doesSchoolExist };

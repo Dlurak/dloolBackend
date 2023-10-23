@@ -14,6 +14,9 @@ export interface AddToClassRequest {
         createdAt: number;
         school: ObjectId;
         password: string;
+
+        email: null | string;
+
         acceptedClasses: ObjectId[];
     };
     classId: ObjectId;
