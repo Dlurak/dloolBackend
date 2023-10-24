@@ -58,6 +58,6 @@ export const generateFullCsv = (homework: WithId<Homework>[]) => {
     });
 
     return csvRows
-        .map((row) => row.map((col) => col.replace(/,/g, ' ')).join('|'))
+        .map((row) => row.map((col) => col.replace(/|/g, ' ')).join('|'))
         .join('\n');
 };
