@@ -2,6 +2,8 @@ import { findUniqueSchool } from '../../database/school/findSchool';
 import { findClass } from '../../database/classes/findClass';
 import express from 'express';
 import { getHomeworkByClass } from '../../database/homework/findHomework';
+import { z } from 'zod';
+import { generateIcal } from './calendar/generateIcal';
 
 const router = express.Router();
 
@@ -83,24 +85,36 @@ const router = express.Router();
  *    }
  */
 router.get('/', async (req, res) => {
-    const className = req.query.class;
-    const schoolName = req.query.school;
+    const genErrorMessages = (keyname: string, type = 'string') => ({
+        invalid_type_error: `Expected ${keyname} to be of type ${type}`,
+        required_error: `No ${keyname} was given`,
+    });
 
-    if (!className) {
+    const schema = z.object({
+        class: z.string(genErrorMessages('class')),
+        school: z.string(genErrorMessages('school')),
+    });
+
+    const result = schema.safeParse(req.query);
+
+    if (!result.success) {
+        const fieldErrors = result.error.flatten().fieldErrors;
+
+        const errors = Object.values(fieldErrors);
+        const flatErrors = errors.reduce((acc, val) => acc.concat(val), []);
+
         res.status(400).json({
             status: 'error',
-            message: 'No class was given',
-        });
-        return;
-    } else if (!schoolName) {
-        res.status(400).json({
-            status: 'error',
-            message: 'No school was given',
+            message: flatErrors[0],
+            errors: fieldErrors,
         });
         return;
     }
 
-    const school = await findUniqueSchool(schoolName as string);
+    const className = result.data.class;
+    const schoolName = result.data.school;
+
+    const school = await findUniqueSchool(schoolName);
     if (!school) {
         res.status(400).json({
             status: 'error',
@@ -109,7 +123,7 @@ router.get('/', async (req, res) => {
         return;
     }
 
-    const classObj = await findClass(school, className as string);
+    const classObj = await findClass(school, className);
 
     if (!classObj) {
         res.status(400).json({
@@ -121,10 +135,38 @@ router.get('/', async (req, res) => {
 
     const homework = await getHomeworkByClass(classObj._id);
 
-    res.status(200).json({
-        status: 'success',
-        message: 'Homework found',
-        data: homework,
+    res.format({
+        'application/json': () => {
+            res.status(200).json({
+                status: 'success',
+                message: 'Homework found',
+                data: homework,
+            });
+            return;
+        },
+        // ical
+        'text/calendar': async () => {
+            const cal = await generateIcal(schoolName, [className]);
+            if (!cal) {
+                res.status(500).json({
+                    status: 'error',
+                    message: 'Internal server error',
+                });
+                return;
+            }
+            res.status(200)
+                .setHeader('Content-Type', 'text/calendar')
+                .send(cal.toString());
+        },
+
+        default: () => {
+            res.status(200).json({
+                status: 'success',
+                message: 'Homework found',
+                data: homework,
+            });
+            return;
+        },
     });
 });
 
