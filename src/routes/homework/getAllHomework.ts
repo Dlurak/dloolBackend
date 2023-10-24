@@ -4,6 +4,7 @@ import express from 'express';
 import { getHomeworkByClass } from '../../database/homework/findHomework';
 import { z } from 'zod';
 import { generateIcal } from './calendar/generateIcal';
+import { generateFullCsv } from './csv/generateCSV';
 
 const router = express.Router();
 
@@ -144,7 +145,6 @@ router.get('/', async (req, res) => {
             });
             return;
         },
-        // ical
         'text/calendar': async () => {
             const cal = await generateIcal(schoolName, [className]);
             if (!cal) {
@@ -158,6 +158,12 @@ router.get('/', async (req, res) => {
                 .setHeader('Content-Type', 'text/calendar')
                 .send(cal.toString());
         },
+        // csv
+        'text/csv': () =>
+            res
+                .status(200)
+                .setHeader('Content-Type', 'text/csv')
+                .send(generateFullCsv(homework)),
 
         default: () => {
             res.status(200).json({
