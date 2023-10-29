@@ -1,7 +1,8 @@
 import express from 'express';
-import { getPaginatedData } from '../../database/utils/getPaginatedData';
-import { schoolsCollection } from '../../database/school/school';
+import { School, schoolsCollection } from '../../database/school/school';
 import pagination from '../../middleware/pagination';
+import { homeworkCollection } from '../../database/homework/homework';
+import { ObjectId, WithId } from 'mongodb';
 
 const router = express.Router();
 
@@ -76,7 +77,7 @@ router.get('/', pagination, async (req, res) => {
 
     const searchTerm = req.query.q;
 
-    let searchFilter;
+    let searchFilter = {};
 
     if (searchTerm) {
         searchFilter = {
@@ -88,17 +89,44 @@ router.get('/', pagination, async (req, res) => {
         };
     }
 
+    // ! This scales horribly
+
+    const homeworksPerSchool: Record<string, number> = {};
+
+    const allFilteredSchools = await schoolsCollection
+        .find(searchFilter)
+        .toArray();
+
+    for (const school of allFilteredSchools) {
+        const classIds = school.classes;
+        const homeworksForSchool = await homeworkCollection.countDocuments({
+            class: {
+                $in: classIds,
+            },
+        });
+        homeworksPerSchool[school._id.toHexString()] = homeworksForSchool;
+    }
+
+    const schoolIds = Object.entries(homeworksPerSchool)
+        .sort((a, b) => b[1] - a[1])
+        .map((i) => new ObjectId(i[0]));
+
+    const pagedSchoolIds = schoolIds.slice(
+        (page - 1) * pageSize,
+        page * pageSize,
+    );
+
+    const schools = (await Promise.all(
+        pagedSchoolIds.map(
+            async (id) => await schoolsCollection.findOne({ _id: id }),
+        ),
+    )) as WithId<School>[];
+
     return res.status(200).json({
         status: 'success',
         message: 'Schools found',
         data: {
-            schools: await getPaginatedData(
-                schoolsCollection,
-                page,
-                pageSize,
-                { _id: 1 },
-                searchFilter || {},
-            ),
+            schools,
             totalPageCount: Math.ceil(
                 (await schoolsCollection.countDocuments(searchFilter || {})) /
                     pageSize,
