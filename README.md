@@ -34,11 +34,17 @@ Here are some problems they have and how Dlool solves them:
     touch .env
     ```
 4. Add the following variables to the `.env` file
+
     1. `Mongo_URI`=String to the Cluster `<username>`, `<password>` and `<dbname>` can be replaced automatically, e.g. `mongodb+srv://<username>:<password>@<dbname>.ljdmejo.mongodb.net/?retryWrites=true&w=majority`
     2. `MONGO_PASSWORD`=Password for the database
     3. `MONGO_USERNAME`=Username for the database
     4. `MONGO_DBNAME`=Name of the database
     5. `JWT_SECRET`=Secret for the JWT, just a random string
+
+    If you want to run tests, the test database needs to be droppable, so you need to add a new user on MongoDB with permission to drop the database. On Atlas it is the highest permission level. You will need to add the following variables to the `.env` file:
+
+    1. `MONGO_USERNAME_TEST`=Username for the newly created user
+    2. `MONGO_PASSWORD_TEST`=Password for the new user
 
 ## Usage
 

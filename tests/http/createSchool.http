@@ -1,9 +1,0 @@
-POST http://localhost:3000/schools/
-Content-Type: application/json
-
-{
-    "name": "School",
-    "description": "This school does not exist it is only for testing purposes",
-    "uniqueName": "school",
-    "timezoneOffset": 0
-}

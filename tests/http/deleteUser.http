@@ -1,3 +1,0 @@
-DELETE http://localhost:3000/auth/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWF0IjoxNjkxMTcxMTcwLCJleHAiOjE2OTExNzQ3NzB9.a1QwEjSzV1--ZTBZdLkL99KhSMZA_WrTqmkvYM9CZcI
-

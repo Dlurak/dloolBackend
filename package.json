@@ -11,7 +11,9 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "document": "apidoc -i src/ -o docs/ -c apidoc.json -e node_modules/",
     "prebuild": "npm run format && npm run document",
-    "serve:docs": "node dist/docs.js"
+    "serve:docs": "node dist/docs.js",
+    "test": "vitest",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -54,14 +56,8 @@
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
     "rrule": "^2.7.2",
-    "typescript": "^5.1.6"
-  },
-  "vercel": {
-    "rewrites": [
-      {
-        "source": "*",
-        "destination": "/"
-      }
-    ]
+    "typescript": "^5.1.6",
+    "vitest": "^0.34.6",
+    "husky": "^8.0.0"
   }
 }

@@ -15,9 +15,12 @@ const client = new mongodb.MongoClient(
         .replace('<dbname>', process.env.MONGO_DBNAME || 'test'),
 );
 
+export let dbIsConnected = false;
+
 client
     .connect()
     .then(() => {
+        dbIsConnected = true;
         console.log('MongoDB connection established');
     })
     .catch((err) => {
@@ -28,13 +31,17 @@ client
 /**
  * The right database
  */
-export const db = client.db(
+export let db = client.db(
     {
         dev: 'dev',
         test: 'test',
         prod: 'prod',
     }[process.env.ENVIROMENT || 'dev'],
 );
+
+export const setDb = (newDbName: 'dev' | 'test' | 'prod') => {
+    db = client.db(newDbName);
+};
 
 process.on('SIGINT', () => {
     client.close().then(() => {

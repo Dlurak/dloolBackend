@@ -28,7 +28,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 const port = +(process.env.PORT as string) || 3000;
-app.listen(port, '0.0.0.0', () => {
+
+export let serverIsRunning = false;
+export const server = app.listen(port, '0.0.0.0', () => {
+    serverIsRunning = true;
     console.log(`Server is running on port ${process.env.PORT}`);
 });
 
