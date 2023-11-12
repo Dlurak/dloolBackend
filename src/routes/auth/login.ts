@@ -1,8 +1,22 @@
 import express from 'express';
 import { generateToken } from '../../utils/jwt';
 import checkUsernamePassword from '../../database/user/checkPassword';
+import { z } from 'zod';
 
 const router = express.Router();
+
+const bodySchema = z.object({
+    username: z
+        .string({
+            required_error: 'Missing username in request body',
+            invalid_type_error: 'Username must be of type string',
+        })
+        .min(1, 'Missing username in request body'),
+    password: z.string({
+        required_error: 'Missing password in request body',
+        invalid_type_error: 'Password must be of type string',
+    }),
+});
 
 /**
  * @api {post} /auth/login Login
@@ -50,17 +64,22 @@ const router = express.Router();
  *    }
  */
 router.post('/', async (req, res) => {
-    const body = req.body;
+    const rawBody = req.body;
 
-    const requiredFields = ['username', 'password'];
-    for (const field of requiredFields) {
-        if (!body[field]) {
-            return res.status(400).json({
-                status: 'error',
-                message: `Missing ${field} in request body`,
-            });
-        }
+    const parsedBody = bodySchema.safeParse(rawBody);
+    if (!parsedBody.success) {
+        const errors = Object.values(
+            parsedBody.error.flatten().fieldErrors,
+        ).flat();
+
+        return res.status(400).json({
+            status: 'error',
+            message: errors[0],
+            errors,
+        });
     }
+
+    const body = parsedBody.data;
 
     const correct = await checkUsernamePassword(body.username, body.password);
 
