@@ -4,7 +4,8 @@ import authenticate from '../../middleware/auth';
 import findUsername from '../../database/user/findUser';
 import { Homework, homeworkCollection } from '../../database/homework/homework';
 import { ObjectId } from 'mongodb';
-import { isDateValid, sortDate } from '../../utils/date';
+import { sortDate } from '../../utils/date';
+import { z } from 'zod';
 
 const router = express.Router();
 
@@ -209,55 +210,6 @@ router.put('/:id', authenticate, async (req, res) => {
 
     const classId = oldHomework.class;
 
-    const { from, assignments } = req.body;
-
-    //--//--// VALIDATION //--//--//
-
-    if (!isDateValid(from)) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'Invalid "from" field',
-        });
-    }
-
-    if (!assignments) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'Missing "assignments" field',
-        });
-    }
-
-    if (!Array.isArray(assignments)) {
-        return res.status(400).json({
-            status: 'error',
-            message: 'Invalid "assignments" field',
-        });
-    }
-
-    for (const assignment of assignments) {
-        const { subject, description, due } = assignment;
-
-        const subjectDescriptionTypes = [typeof subject, typeof description];
-
-        const subjectDescriptionValid = subjectDescriptionTypes.every(
-            (type) => type === 'string',
-        );
-
-        if (!subjectDescriptionValid) {
-            return res.status(400).json({
-                status: 'error',
-                message: 'Invalid "subject" or "description" field',
-            });
-        }
-
-        if (!isDateValid(due)) {
-            return res.status(400).json({
-                status: 'error',
-                message: 'Invalid "due" field',
-            });
-        }
-    }
-
     const userId = await userIdPromise;
     if (!userId) {
         return res.status(500).json({
@@ -266,8 +218,151 @@ router.put('/:id', authenticate, async (req, res) => {
         });
     }
 
+    const schema = z.object({
+        from: z.object(
+            {
+                year: z
+                    .number({
+                        invalid_type_error: 'from.year must be a number',
+                        required_error: 'Missing "from.year" field',
+                    })
+                    .int({
+                        message: 'from.year must be an integer',
+                    }),
+                month: z
+                    .number({
+                        invalid_type_error: 'from.month must be a number',
+                        required_error: 'Missing "from.month" field',
+                    })
+                    .int({
+                        message: 'from.month must be an integer',
+                    })
+                    .min(1, {
+                        message: 'from.month must be greater than 0',
+                    })
+                    .max(12, {
+                        message: 'from.month must be less than 13',
+                    }),
+                day: z
+                    .number({
+                        invalid_type_error: 'from.day must be a number',
+                        required_error: 'Missing "from.day" field',
+                    })
+                    .int({
+                        message: 'from.day must be an integer',
+                    })
+                    .min(1, {
+                        message: 'from.day must be greater than 0',
+                    })
+                    .max(31, {
+                        message: 'from.day must be less than 32',
+                    }),
+            },
+            {
+                required_error: 'Missing "from" field',
+                invalid_type_error: 'Invalid "from" field',
+            },
+        ),
+
+        assignments: z.array(
+            z.object(
+                {
+                    subject: z
+                        .string({
+                            invalid_type_error: 'subject must be a string',
+                            required_error: 'Missing "subject" field',
+                        })
+                        .min(1, {
+                            message: 'Missing "subject" field',
+                        })
+                        .max(64, {
+                            message: 'subject must be less than 65 characters',
+                        }),
+                    description: z
+                        .string({
+                            invalid_type_error: 'description must be a string',
+                            required_error: 'Missing "description" field',
+                        })
+                        .min(1, {
+                            message: 'Missing "description" field',
+                        })
+                        .max(1024, {
+                            message:
+                                'description must be less than 1025 characters',
+                        }),
+                    due: z.object(
+                        {
+                            year: z
+                                .number({
+                                    invalid_type_error:
+                                        'due.year must be a number',
+                                    required_error: 'Missing "due.year" field',
+                                })
+                                .int({
+                                    message: 'due.year must be an integer',
+                                }),
+                            month: z
+                                .number({
+                                    invalid_type_error:
+                                        'due.month must be a number',
+                                    required_error: 'Missing "due.month" field',
+                                })
+                                .int({
+                                    message: 'due.month must be an integer',
+                                })
+                                .min(1, {
+                                    message: 'due.month must be greater than 0',
+                                })
+                                .max(12, {
+                                    message: 'due.month must be less than 13',
+                                }),
+                            day: z
+                                .number({
+                                    invalid_type_error:
+                                        'due.day must be a number',
+                                    required_error: 'Missing "due.day" field',
+                                })
+                                .int({
+                                    message: 'due.day must be an integer',
+                                })
+                                .min(1, {
+                                    message: 'due.day must be greater than 0',
+                                })
+                                .max(31, {
+                                    message: 'due.day must be less than 32',
+                                }),
+                        },
+                        {
+                            invalid_type_error: 'Invalid "due" field',
+                            required_error: 'Missing "due" field',
+                        },
+                    ),
+                },
+                {
+                    invalid_type_error: 'Invalid "assignments" field',
+                    required_error: 'Missing "assignments" field',
+                },
+            ),
+            {
+                invalid_type_error: 'Invalid "assignments" field',
+                required_error: 'Missing "assignments" field',
+            },
+        ),
+    });
+
+    const zodResult = schema.safeParse(req.body);
+    if (!zodResult.success) {
+        const errors = zodResult.error.flatten().fieldErrors;
+        return res.status(400).json({
+            status: 'error',
+            message: Object.values(errors)[0][0],
+            errors,
+        });
+    }
+
     //--//--// UPDATING //--//--//
 
+    const { assignments, from } = zodResult.data;
     const newHomework: Homework = {
         from: sortDate(from),
         assignments: assignments.map((assignment) => {
