@@ -7,6 +7,7 @@ import {
 import { noteCollection } from '../../database/notes/notes';
 import { authenticateOptional } from '../../middleware/auth';
 import findUsername from '../../database/user/findUser';
+import { findClassBySchoolNameAndClassName } from '../../database/classes/findClass';
 
 const router = express.Router();
 
@@ -41,7 +42,26 @@ const router = express.Router();
  */
 router.get('/', pagination, authenticateOptional, async (req, res) => {
     const { page, pageSize } = res.locals.pagination;
-    let query = { visibility: 'public' } as any;
+    const { school, class: className } = req.query as {
+        school: undefined | string;
+        class: undefined | string;
+    };
+
+    let query = { visibility: 'public', class: null } as any;
+
+    if (school && className) {
+        const classId = await findClassBySchoolNameAndClassName(
+            school,
+            className,
+        ).then((c) => c?._id);
+
+        if (!classId)
+            return res
+                .status(404)
+                .json({ status: 'error', message: 'Class not found' });
+
+        query = { visibility: 'public', class: classId };
+    }
 
     const isAuthedResLocal = res.locals.authenticated as boolean;
     const username = res.locals.jwtPayload?.username as string | undefined;
@@ -55,10 +75,7 @@ router.get('/', pagination, authenticateOptional, async (req, res) => {
 
         const userId = userObj._id;
         query = {
-            $or: [
-                { visibility: 'public' },
-                { visibility: 'private', creator: userId },
-            ],
+            $or: [query, { visibility: 'private', creator: userId }],
         };
     }
 
