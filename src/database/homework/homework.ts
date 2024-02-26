@@ -9,6 +9,7 @@ homeworkCollection.createIndex({ class: 1, from: 1 }, { unique: true });
 
 export interface Homework {
     creator: ObjectId;
+    contributors: ObjectId[];
     class: ObjectId;
 
     createdAt: number; // timestamp

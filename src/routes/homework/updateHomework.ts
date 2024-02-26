@@ -365,15 +365,14 @@ router.put('/:id', authenticate, async (req, res) => {
     const { assignments, from } = zodResult.data;
     const newHomework: Homework = {
         from: sortDate(from),
-        assignments: assignments.map((assignment) => {
-            return {
-                subject: assignment.subject,
-                description: assignment.description,
-                due: sortDate(assignment.due),
-            };
-        }),
+        assignments: assignments.map((assignment) => ({
+            subject: assignment.subject,
+            description: assignment.description,
+            due: sortDate(assignment.due),
+        })),
         class: classId,
-        creator: userId,
+        creator: oldHomework.creator,
+        contributors: [...oldHomework.contributors, userId],
         createdAt,
     };
 

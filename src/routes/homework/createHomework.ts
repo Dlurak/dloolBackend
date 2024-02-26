@@ -290,6 +290,7 @@ router.post('/', authenticate, async (req, res) => {
     buildHomework.class = classOfHomework._id;
     buildHomework.creator = user._id;
     buildHomework.createdAt = Date.now();
+    buildHomework.contributors = [];
 
     let data: WithId<Homework>;
 
