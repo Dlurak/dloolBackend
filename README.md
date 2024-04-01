@@ -1,5 +1,7 @@
 # Dlool - Digital Homework Book
 
+**This is currently undergoing a complete rewrite, please see [this repository](https://github.com/Dlurak/dlool_backend_v2)**
+
 Dlool is the digital version of a homework book.
 
 ---
